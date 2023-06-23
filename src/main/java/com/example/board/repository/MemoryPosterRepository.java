@@ -1,9 +1,12 @@
 package com.example.board.repository;
 
 import com.example.board.domain.Poster;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+
+@Repository
 public class MemoryPosterRepository implements PosterRepository{
 
     private Map<Long, Poster> store = new HashMap<>();
@@ -25,7 +28,7 @@ public class MemoryPosterRepository implements PosterRepository{
     public Optional<Poster> findByTitle(String title) {
         return store.values().stream()
                 .filter(member -> member.getTitle().equals(title))
-                .findAny(); // 중복 제목 불가도 해보고 중복 제목 검색도 해보자.
+                .findAny(); // 추후에 중복 제목 불가도 해보고 중복 제목 검색 작업 해보자.
     }
 
     @Override

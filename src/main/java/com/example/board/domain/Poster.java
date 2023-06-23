@@ -3,9 +3,9 @@ package com.example.board.domain;
 public class Poster {
     private Long id;
     private String title;
-    private String username;
+    private String writer;
     private String content;
-
+    // 추후에 작성일도 해보자.
 
     public Long getId() {
         return id;
@@ -23,12 +23,12 @@ public class Poster {
         this.title = title;
     }
 
-    public String getUsername() {
-        return username;
+    public String getWriter() {
+        return writer;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
     public String getContent() {
