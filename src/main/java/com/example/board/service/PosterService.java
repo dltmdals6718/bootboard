@@ -2,6 +2,7 @@ package com.example.board.service;
 
 import com.example.board.domain.Poster;
 import com.example.board.repository.PosterRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class PosterService {
         this.posterRepository = posterRepository;
     }
 
+    @Transactional
     public Long write(Poster poster) {
         posterRepository.save(poster);
         return poster.getId();

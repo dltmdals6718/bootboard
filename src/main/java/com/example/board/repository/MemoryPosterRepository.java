@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 
-@Repository
 public class MemoryPosterRepository implements PosterRepository{
 
     private Map<Long, Poster> store = new HashMap<>();

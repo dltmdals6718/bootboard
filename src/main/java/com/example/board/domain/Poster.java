@@ -1,6 +1,16 @@
 package com.example.board.domain;
 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Poster {
+
+    //Id와 GeneratedValue는 무엇이고 왜 사용하는것인가?
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String writer;
