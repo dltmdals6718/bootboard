@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -27,6 +28,7 @@ public class PosterController {
 
     @PostMapping("/poster/write")
     public String write(Poster poster) {
+        poster.setRegdate(LocalDateTime.now());
         posterService.write(poster);
         return "redirect:/";
     }

@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Poster {
 
@@ -15,7 +17,16 @@ public class Poster {
     private String title;
     private String writer;
     private String content;
-    // 추후에 작성일도 해보자.
+
+    private LocalDateTime regdate;
+
+    public LocalDateTime getRegdate() {
+        return regdate;
+    }
+
+    public void setRegdate(LocalDateTime regdate) {
+        this.regdate = regdate;
+    }
 
     public Long getId() {
         return id;

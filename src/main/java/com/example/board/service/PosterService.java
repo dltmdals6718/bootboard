@@ -11,6 +11,7 @@ import java.util.Optional;
 
 
 @Service
+@Transactional
 public class PosterService {
     private PosterRepository posterRepository;
 
@@ -19,7 +20,7 @@ public class PosterService {
         this.posterRepository = posterRepository;
     }
 
-    @Transactional
+
     public Long write(Poster poster) {
         posterRepository.save(poster);
         return poster.getId();
