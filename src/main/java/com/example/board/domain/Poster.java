@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 public class Poster {
 
-    //Id와 GeneratedValue는 무엇이고 왜 사용하는것인가?
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;

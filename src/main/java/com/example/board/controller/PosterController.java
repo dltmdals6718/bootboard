@@ -40,4 +40,11 @@ public class PosterController {
         return "posters/posterList";
     }
 
+    @GetMapping("/poster/read")
+    public String read(Long id, Model model) {
+        Poster poster = posterService.findByOne(id).get();
+        model.addAttribute("poster", poster);
+        return "posters/posterView";
+    }
+
 }

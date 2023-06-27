@@ -9,13 +9,11 @@
     <th>ID</th>
     <th>title</th>
     <th>writer</th>
-    <th>content</th>
     <th>date</th>
     <tr th:each="poster : ${posters}">
         <td th:text="${poster.id}"></td>
-        <td th:text="${poster.title}"></td>
+        <td><a th:text="${poster.title}" th:href="@{/poster/read(id=${poster.id})}"></a></td>
         <td th:text="${poster.writer}"></td>
-        <td th:text="${poster.content}"></td>
         <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
     </tr>
 </table>

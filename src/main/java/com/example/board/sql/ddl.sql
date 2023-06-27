@@ -10,4 +10,3 @@ CREATE TABLE poster (
                         regdate DATETIME,
                         PRIMARY KEY (id)
 );
-작성일도 추가해보자.

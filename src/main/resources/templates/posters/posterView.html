@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>제목</th>
+        <td th:text="${poster.title}"></td>
+    </tr>
+    <tr>
+        <th>작성자</th>
+        <td th:text="${poster.writer}"></td>
+    </tr>
+    <tr>
+        <th>작성일</th>
+        <td th:text="${#temporals.format(poster.regdate, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    <tr>
+        <th>내용</th>
+        <td th:text="${poster.content}"></td>
+    </tr>
+</table>
+</body>
+</html>
