@@ -46,4 +46,10 @@ public class JpaPosterRepository implements PosterRepository{
         return em.createQuery("SELECT p FROM Poster as p", Poster.class)
                 .getResultList();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        Poster poster = em.find(Poster.class, id);
+        em.remove(poster);
+    }
 }

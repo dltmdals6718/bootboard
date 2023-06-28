@@ -34,4 +34,7 @@ public class PosterService {
         return posterRepository.findById(posterId);
     }
 
+    public void deletePoster(Long id) {
+        posterRepository.deleteById(id);
+    }
 }

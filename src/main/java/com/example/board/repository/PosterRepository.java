@@ -11,4 +11,5 @@ public interface PosterRepository {
     Optional<Poster> findById(Long id);
     Optional<Poster> findByTitle(String title);
     List<Poster> findAll();
+    void deleteById(Long id);
 }
