@@ -2,13 +2,12 @@ package com.example.board.controller;
 
 import com.example.board.domain.Poster;
 import com.example.board.service.PosterService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +28,11 @@ public class PosterController {
     }
 
     @PostMapping("/poster/write")
-    public String write(Poster poster) {
+    public String write(@Valid Poster poster, Errors errors) {
+        if(errors.hasErrors()) {
+            return "posters/createPosterForm";
+        }
+
         poster.setRegdate(LocalDateTime.now());
         posterService.write(poster);
         return "redirect:/";
@@ -43,7 +46,7 @@ public class PosterController {
     }
 
     @GetMapping("/poster/read")
-    public String read(Model model,@RequestParam(name = "id", required=true, defaultValue="1") Long id) {
+    public String read(Model model,@RequestParam(name = "id") Long id) {
         Poster poster = posterService.findByOne(id).get();
         model.addAttribute("poster", poster);
         return "posters/posterView";

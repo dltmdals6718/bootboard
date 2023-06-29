@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDateTime;
 
@@ -13,8 +15,15 @@ public class Poster {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "제목을 입력하세요.")
     private String title;
+
+    @NotBlank(message = "작성자를 입력하세요.")
     private String writer;
+
+
+    @NotBlank(message = "내용을 입력하세요.")
     private String content;
 
     private LocalDateTime regdate;
