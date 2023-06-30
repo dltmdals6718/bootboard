@@ -23,6 +23,7 @@
         <td th:text="${poster.content}"></td>
     </tr>
 </table>
+<button type="button" th:onclick="|location.href='@{/poster/edit(id=${poster.id})}'|">수정</button>
 <button type="button" th:onclick="|location.href='@{/poster/delete(id=${poster.id})}'|">삭제</button>
 </body>
 </html>
