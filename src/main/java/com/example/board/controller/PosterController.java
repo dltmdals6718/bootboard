@@ -23,7 +23,8 @@ public class PosterController {
 
 
     @GetMapping("/poster/write")
-    public String writeForm() {
+    public String writeForm(Model model) {
+        model.addAttribute("poster", new Poster());
         return "posters/createPosterForm";
     }
 
