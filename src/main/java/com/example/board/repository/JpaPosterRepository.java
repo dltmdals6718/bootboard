@@ -60,6 +60,5 @@ public class JpaPosterRepository implements PosterRepository{
         oldPoster.setWriter(newPoster.getWriter());
         oldPoster.setContent(newPoster.getContent());
         oldPoster.setRegdate(LocalDateTime.now());
-        //em.persist(oldPoster);
     }
 }

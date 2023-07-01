@@ -65,9 +65,12 @@ public class PosterController {
         return "posters/editPosterForm";
     }
 
-    // 유효성 검사 추가 작성 필요
     @PostMapping("/poster/edit")
-    public String edit(@RequestParam(value="id") Long id, Poster poster) {
+    public String edit(@RequestParam(value="id") Long id, @Valid Poster poster, Errors errors) {
+
+        if(errors.hasErrors()) {
+            return "posters/editPosterForm";
+        }
         // Post로 넘어온 poster에는 제목, 작성자, 내용만 있지 PK인 id는 함께 넘어오지 않아 poster.getId는 null을 가짐.
         //posterService.editPoster(poster.getId(), poster);
         posterService.editPoster(id, poster);
