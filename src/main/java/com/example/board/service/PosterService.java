@@ -2,6 +2,7 @@ package com.example.board.service;
 
 import com.example.board.domain.Poster;
 import com.example.board.repository.PosterRepository;
+import com.example.board.repository.SpringDataJpaPosterRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,16 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PosterService {
-    private PosterRepository posterRepository;
+    private SpringDataJpaPosterRepository posterRepository;
 
     @Autowired
-    public PosterService(PosterRepository posterRepository) {
+    public PosterService(SpringDataJpaPosterRepository posterRepository) {
         this.posterRepository = posterRepository;
     }
 
 
     public Long write(Poster poster) {
+        poster.setRegdate(LocalDateTime.now());
         posterRepository.save(poster);
         return poster.getId();
     }
@@ -40,6 +42,11 @@ public class PosterService {
     }
 
     public void editPoster(Long id, Poster newPoster) {
-        posterRepository.edit(id, newPoster);
+        Poster oldPoster = posterRepository.findById(id).get();
+        oldPoster.setTitle(newPoster.getTitle());
+        oldPoster.setWriter(newPoster.getWriter());
+        oldPoster.setContent(newPoster.getContent());
+        oldPoster.setRegdate(LocalDateTime.now());
+        //posterRepository.edit(id, newPoster);
     }
 }

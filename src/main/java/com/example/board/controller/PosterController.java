@@ -15,8 +15,10 @@ import java.util.List;
 @Controller
 public class PosterController {
 
+
     private final PosterService posterService;
 
+    @Autowired
     public PosterController(PosterService posterService) {
         this.posterService = posterService;
     }

@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Repository
-public class JpaPosterRepository implements PosterRepository{
+//@Repository
+public class JpaPosterRepository /*implements PosterRepository*/ {
 
-    private final EntityManager em;
+    /*private final EntityManager em;
 
     @Autowired
     public JpaPosterRepository(EntityManager em) {
@@ -23,7 +23,7 @@ public class JpaPosterRepository implements PosterRepository{
 
     @Override
     public Poster save(Poster poster) {
-        poster.setRegdate(LocalDateTime.now());
+
         em.persist(poster);
         return poster;
     }
@@ -55,10 +55,6 @@ public class JpaPosterRepository implements PosterRepository{
 
     @Override
     public void edit(Long id, Poster newPoster) {
-        Poster oldPoster = em.find(Poster.class, id);
-        oldPoster.setTitle(newPoster.getTitle());
-        oldPoster.setWriter(newPoster.getWriter());
-        oldPoster.setContent(newPoster.getContent());
-        oldPoster.setRegdate(LocalDateTime.now());
-    }
+
+    }*/
 }
