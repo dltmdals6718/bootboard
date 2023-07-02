@@ -17,5 +17,8 @@
         <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
     </tr>
 </table>
+<button type="button" th:if=${hasPrevious} th:onclick="|location.href='@{/posters(page=${previous})}'|">이전</button>
+<!-- 페이징 링크 생성하기 -->
+<button type="button" th:if="${hasNext}" th:onclick="|location.href='@{/posters(page=${next})}'|">다음</button>
 </body>
 </html>

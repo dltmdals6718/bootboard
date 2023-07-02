@@ -5,6 +5,8 @@ import com.example.board.repository.PosterRepository;
 import com.example.board.repository.SpringDataJpaPosterRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,4 +51,10 @@ public class PosterService {
         oldPoster.setRegdate(LocalDateTime.now());
         //posterRepository.edit(id, newPoster);
     }
+
+
+    public Page<Poster> pageList(Pageable pageable) {
+        return posterRepository.findAll(pageable);
+    }
+
 }
