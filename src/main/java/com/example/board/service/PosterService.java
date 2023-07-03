@@ -6,6 +6,7 @@ import com.example.board.repository.SpringDataJpaPosterRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,6 @@ public class PosterService {
         oldPoster.setWriter(newPoster.getWriter());
         oldPoster.setContent(newPoster.getContent());
         oldPoster.setRegdate(LocalDateTime.now());
-        //posterRepository.edit(id, newPoster);
     }
 
 
