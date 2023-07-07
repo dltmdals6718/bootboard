@@ -3,27 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<table>
-    <tr>
-        <th>제목</th>
-        <td th:text="${poster.title}"></td>
-    </tr>
-    <tr>
-        <th>작성자</th>
-        <td th:text="${poster.writer}"></td>
-    </tr>
-    <tr>
-        <th>작성일</th>
-        <td th:text="${#temporals.format(poster.regdate, 'yyyy-MM-dd HH:mm')}"></td>
-    </tr>
-    <tr>
-        <th>내용</th>
-        <td th:text="${poster.content}"></td>
-    </tr>
-</table>
-<button type="button" th:onclick="|location.href='@{/poster/edit(id=${poster.id})}'|">수정</button>
-<button type="button" th:onclick="|location.href='@{/poster/delete(id=${poster.id})}'|">삭제</button>
+<div class="content container">
+    <table class="table">
+        <tr>
+            <th>제목</th>
+            <td th:text="${poster.title}"></td>
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td th:text="${poster.writer}"></td>
+        </tr>
+        <tr>
+            <th>작성일</th>
+            <td th:text="${#temporals.format(poster.regdate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td th:text="${poster.content}"></td>
+        </tr>
+    </table>
+    <div class="btn-group float-end">
+        <button class="btn btn-primary" type="button" th:onclick="|location.href='@{/poster/edit(id=${poster.id})}'|">수정</button>
+        <button class="btn btn-primary" type="button" th:onclick="|location.href='@{/poster/delete(id=${poster.id})}'|">삭제</button>
+        <button class="btn btn-primary" type="button" th:onclick="|location.href='@{/posters}'|">목록</button>
+    </div>
+</div>
+
+<script src="/js/bootstrap.min.js"></script>
 </body>
 </html>

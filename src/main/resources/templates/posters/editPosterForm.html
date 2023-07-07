@@ -3,22 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<form th:action="@{/poster/edit(id=${poster.id})}" method="post" th:object="${poster}">
-    <label>제목</label>
-    <input type="text" name="title" th:field="*{title}">
-    <span th:errors="*{title}"></span><br>
+<div class="d-flex justify-content-center">
+    <form class="w-50 h-50" th:action="@{/poster/edit(id=${poster.id})}" method="post" th:object="${poster}">
+        <div class="form-floating">
+            <input class="form-control" placeholder="제목" type="text" name="title" th:field="*{title}"><label>제목</label>
+            <label>제목</label>
+            <span th:errors="*{title}"></span><br>
+        </div>
 
-    <label>작성자</label>
-    <input type="text" name="writer" th:field="*{writer}">
-    <span th:errors="*{writer}"></span><br>
+        <div class="form-floating">
+            <input class="form-control" placeholder="작성자" type="text" name="writer" th:field="*{writer}">
+            <label>작성자</label>
+            <span th:errors="*{writer}"></span><br>
+        </div>
 
-    <label>내용</label>
-    <textarea type="text" name="content" th:field="*{content}"></textarea>
-    <span th:errors="*{content}"></span><br>
+        <div class="form-floating">
+        <textarea class="form-control" placeholder="내용" type="text" name="content" th:field="*{content}"
+                  style="height: 100px"></textarea>
+            <label>내용</label>
+            <span th:errors="*{content}"></span><br>
+        </div>
 
-    <button type="submit">수정</button>
-</form>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{/posters}'|">취소</button>
+            <button class="btn btn-primary" type="submit">제출</button>
+        </div>
+    </form>
+</div>
 </body>
+<script src="/js/bootstrap.min.js"></script>
 </html>

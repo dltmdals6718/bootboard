@@ -3,27 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<table>
-    <th>ID</th>
-    <th>title</th>
-    <th>writer</th>
-    <th>date</th>
-    <tr th:each="poster : ${posters}">
-        <td th:text="${poster.id}"></td>
-        <td><a th:text="${poster.title}" th:href="@{/poster/read(id=${poster.id})}"></a></td>
-        <td th:text="${poster.writer}"></td>
-        <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
-    </tr>
-</table>
-<button type="button" th:if=${hasPrevious} th:onclick="|location.href='@{/posters(page=${previous})}'|">이전</button>
+<div class="contents container w-75">
+    <div>
+        <div class="d-flex justify-content-start float-start">
+            <button>최신순</button>
+            <button>댓글순</button>
+        </div>
+        <div class="d-flex justify-content-end">
+            <input>
+            <button>검색</button>
+        </div>
+    </div>
 
-<th:block th:unless="${posters.isEmpty()}" th:each="num : ${#numbers.sequence(startPage,endPage)}">
-    <a th:text="${num}" th:href="@{/posters(page=${num-1})}"></a>
-</th:block>
+    <table class="table table-hover">
+        <th>No</th>
+        <th>title</th>
+        <th>writer</th>
+        <th>date</th>
+        <tr th:if="${posters.isEmpty()}">
+            <td colspan="4">게시글이 존재하지 않습니다.</td>
+        </tr>
+        <tr th:each="poster : ${posters}">
+            <td th:text="${poster.id}"></td>
+            <td><a th:text="${poster.title}" th:href="@{/poster/read(id=${poster.id})}"></a></td>
+            <td th:text="${poster.writer}"></td>
+            <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
+        </tr>
+    </table>
 
-<button type="button" th:if="${hasNext}" th:onclick="|location.href='@{/posters(page=${next})}'|">다음</button>
+    <div>
+        <button type="button" class="btn btn-primary float-end" th:onclick="|location.href='@{/poster/write}'|">작성하기
+        </button>
+        <nav class="nav justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:if=${hasPrevious}><a class="page-link"
+                                                              th:href="@{/posters(page=${previous})}">이전</a></li>
+                <th:block th:unless="${posters.isEmpty()}" th:each="num : ${#numbers.sequence(startPage,endPage)}">
+                    <li class="page-item">
+                        <a class="page-link" th:text="${num}" th:href="@{/posters(page=${num}-1)}"></a>
+                    </li>
+                </th:block>
+                <li class="page-item" th:if="${hasNext}"><a class="page-link" th:href="@{/posters(page=${next})}">다음</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script src="/js/bootstrap.min.js"></script>
 
 </body>
 </html>
