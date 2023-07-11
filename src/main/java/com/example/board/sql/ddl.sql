@@ -10,3 +10,14 @@ CREATE TABLE poster (
                         regdate DATETIME,
                         PRIMARY KEY (id)
 );
+
+
+CREATE TABLE comment (
+    id bigint NOT NULL auto_increment,
+    pno bigint NOT NULL,
+    writer VARCHAR(100) NOT NULL,
+    content VARCHAR(300) NOT NULL,
+    regdate DATETIME NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(pno) REFERENCES poster(id)
+);

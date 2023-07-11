@@ -1,6 +1,8 @@
 package com.example.board.controller;
 
+import com.example.board.domain.Comment;
 import com.example.board.domain.Poster;
+import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,15 @@ import java.util.List;
 @Controller
 public class PosterController {
 
-
     private final PosterService posterService;
 
+    private final CommentService commentService;
+
+
     @Autowired
-    public PosterController(PosterService posterService) {
+    public PosterController(PosterService posterService, CommentService commentService) {
         this.posterService = posterService;
+        this.commentService = commentService;
     }
 
 
@@ -73,6 +78,9 @@ public class PosterController {
     public String read(Model model,@RequestParam(name = "id") Long id) {
         Poster poster = posterService.findByOne(id).get();
         model.addAttribute("poster", poster);
+
+        List<Comment> comments = commentService.findComments(id);
+        model.addAttribute("comments", comments);
         return "posters/posterView";
     }
 
@@ -95,7 +103,6 @@ public class PosterController {
         if(errors.hasErrors()) {
             return "posters/editPosterForm";
         }
-
         posterService.editPoster(id, poster);
         return "redirect:/posters";
     }
