@@ -51,8 +51,13 @@
     </div>
 
     <div>
-        <ul th:each="comment : ${comments}">
-            <li th:text="|${comment.writer} ${comment.content} ${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}|">
+        <ul>
+            <li th:each="comment : ${comments}">
+                <span th:text="|${comment.writer} ${comment.content} ${#temporals.format(comment.regDate, 'yyyy.MM.dd HH:mm')}|"> </span>
+                <form th:action="@{/comment/delete}" method="post">
+                    <input type="hidden" name="id" th:value="${comment.id}">
+                    <button type="submit">삭제</button>
+                </form>
             </li>
         </ul>
     </div>

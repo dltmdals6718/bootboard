@@ -32,5 +32,12 @@ public class CommentService {
         return comments;
     }
 
+    public Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId).get();
+    }
+
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
 
 }

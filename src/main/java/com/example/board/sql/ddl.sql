@@ -11,6 +11,7 @@ CREATE TABLE poster (
                         PRIMARY KEY (id)
 );
 
+ALTER TABLE poster ADD COLUMN comment_cnt int not null default 0;
 
 CREATE TABLE comment (
     id bigint NOT NULL auto_increment,

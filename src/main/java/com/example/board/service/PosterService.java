@@ -52,9 +52,20 @@ public class PosterService {
         oldPoster.setRegdate(LocalDateTime.now());
     }
 
-
     public Page<Poster> pageList(Pageable pageable) {
         return posterRepository.findAll(pageable);
+    }
+
+    public void incrementCommentCnt(Long id) {
+        Poster poster = posterRepository.findById(id).get();
+        int commentCnt = poster.getCommentCnt();
+        poster.setCommentCnt(commentCnt+1);
+    }
+
+    public void decreaseCommentCnt(Long id) {
+        Poster poster = posterRepository.findById(id).get();
+        int commentCnt = poster.getCommentCnt();
+        poster.setCommentCnt(commentCnt-1);
     }
 
 }

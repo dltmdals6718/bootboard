@@ -1,10 +1,7 @@
 package com.example.board.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -27,6 +24,18 @@ public class Poster {
     private String content;
 
     private LocalDateTime regdate;
+
+
+    @Column(name="comment_cnt")
+    private int commentCnt;
+
+    public int getCommentCnt() {
+        return commentCnt;
+    }
+
+    public void setCommentCnt(int commentCnt) {
+        this.commentCnt = commentCnt;
+    }
 
     public LocalDateTime getRegdate() {
         return regdate;
