@@ -51,9 +51,13 @@ public class PosterController {
     }
 
     @GetMapping("/posters")
-    public String list(Model model, @PageableDefault(sort="id", value=5, direction = Sort.Direction.DESC) Pageable pageable) {
+    public String list(Model model, @PageableDefault(sort="id", value=5, direction = Sort.Direction.DESC) Pageable pageable, String searchTitle) {
 
-        Page<Poster> pageList = posterService.pageList(pageable);
+        Page<Poster> pageList;
+        if(searchTitle==null)
+            pageList = posterService.pageList(pageable);
+        else
+            pageList = posterService.searchPageList(searchTitle, pageable);
 
         model.addAttribute("posters", pageList);
         model.addAttribute("postersSize", pageList.isEmpty());

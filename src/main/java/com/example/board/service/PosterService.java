@@ -56,6 +56,10 @@ public class PosterService {
         return posterRepository.findAll(pageable);
     }
 
+    public Page<Poster> searchPageList(String title, Pageable pageable) {
+        return posterRepository.findByTitleContaining(title, pageable);
+    }
+
     public void incrementCommentCnt(Long id) {
         Poster poster = posterRepository.findById(id).get();
         int commentCnt = poster.getCommentCnt();
