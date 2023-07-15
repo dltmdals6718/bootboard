@@ -15,8 +15,10 @@
             <button>댓글순</button>
         </div>
         <div class="d-flex justify-content-end">
-            <input>
-            <button>검색</button>
+            <form action="/posters" method="get">
+                <input type="text" name="searchTitle">
+                <button type="submit">검색</button>
+            </form>
         </div>
     </div>
 
@@ -45,17 +47,23 @@
         <nav class="nav justify-content-center">
             <ul class="pagination">
                 <li class="page-item" th:if="${hasPrevious} and ${param.searchTitle != null}"><a class="page-link"
-                                                              th:href="@{/posters(page=${previous}, searchTitle=${param.searchTitle})}">이전</a></li>
+                                                                                                 th:href="@{/posters(page=${previous}, searchTitle=${param.searchTitle})}">이전</a>
+                </li>
                 <li class="page-item" th:if="${hasPrevious} and ${param.searchTitle == null}"><a class="page-link"
-                                                              th:href="@{/posters(page=${previous})}">이전</a></li>
+                                                                                                 th:href="@{/posters(page=${previous})}">이전</a>
+                </li>
                 <th:block th:unless="${posters.isEmpty()}" th:each="num : ${#numbers.sequence(startPage,endPage)}">
                     <li class="page-item">
-                        <a class="page-link" th:if="${param.searchTitle != null}" th:text="${num}" th:href="@{/posters(page=${num}-1, searchTitle=${param.searchTitle})}"></a>
-                        <a class="page-link" th:if="${param.searchTitle == null}" th:text="${num}" th:href="@{/posters(page=${num}-1)}"></a>
+                        <a class="page-link" th:if="${param.searchTitle != null}" th:text="${num}"
+                           th:href="@{/posters(page=${num}-1, searchTitle=${param.searchTitle})}"></a>
+                        <a class="page-link" th:if="${param.searchTitle == null}" th:text="${num}"
+                           th:href="@{/posters(page=${num}-1)}"></a>
                     </li>
                 </th:block>
-                <li class="page-item" th:if="${hasNext} and ${param.searchTitle != null}"><a class="page-link" th:href="@{/posters(page=${next}, searchTitle=${param.searchTitle})}">다음</a>
-                <li class="page-item" th:if="${hasNext} and ${param.searchTitle == null}"><a class="page-link" th:href="@{/posters(page=${next})}">다음</a>
+                <li class="page-item" th:if="${hasNext} and ${param.searchTitle != null}"><a class="page-link"
+                                                                                             th:href="@{/posters(page=${next}, searchTitle=${param.searchTitle})}">다음</a>
+                <li class="page-item" th:if="${hasNext} and ${param.searchTitle == null}"><a class="page-link"
+                                                                                             th:href="@{/posters(page=${next})}">다음</a>
                 </li>
             </ul>
         </nav>
