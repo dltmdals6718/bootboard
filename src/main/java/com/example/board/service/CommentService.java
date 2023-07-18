@@ -5,6 +5,8 @@ import com.example.board.domain.Comment;
 import com.example.board.repository.SpringDataJpaCommentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +29,8 @@ public class CommentService {
         return comment.getId();
     }
 
-    public List<Comment> findComments(Long pno) {
-        List<Comment> comments = commentRepository.findByPno(pno);
+    public Page<Comment> findComments(Long pno, Pageable pageable) {
+        Page<Comment> comments = commentRepository.findByPno(pno, pageable);
         return comments;
     }
 

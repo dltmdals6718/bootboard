@@ -79,12 +79,10 @@ public class PosterController {
         return "posters/posterList";
     }
     @GetMapping("/poster/read")
-    public String read(Model model,@RequestParam(name = "id") Long id) {
+    public String read(Model model,@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "id") Long id) {
         Poster poster = posterService.findByOne(id).get();
         model.addAttribute("poster", poster);
 
-        List<Comment> comments = commentService.findComments(id);
-        model.addAttribute("comments", comments);
         return "posters/posterView";
     }
 

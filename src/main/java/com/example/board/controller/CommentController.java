@@ -5,10 +5,17 @@ import com.example.board.domain.Poster;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -28,6 +35,13 @@ public class CommentController {
         posterService.incrementCommentCnt(comment.getPno());
         commentService.write(comment);
         return "redirect:/poster/read?id=" + comment.getPno();
+    }
+
+    @GetMapping("/comments")
+    @ResponseBody
+    public Page<Comment> test(@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "pno") Long pno) {
+        Page<Comment> comments = commentService.findComments(pno, pageable);
+        return comments;
     }
 
     @PostMapping("/comment/delete")
