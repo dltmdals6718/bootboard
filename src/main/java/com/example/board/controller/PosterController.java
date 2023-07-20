@@ -88,6 +88,7 @@ public class PosterController {
 
     @GetMapping("/poster/delete")
     public String delete(@RequestParam(value="id") Long id) {
+        commentService.deleteCommentByPno(id);
         posterService.deletePoster(id);
         return "redirect:/posters";
     }

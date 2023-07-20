@@ -29,9 +29,19 @@ public class CommentService {
         return comment.getId();
     }
 
-    public Page<Comment> findComments(Long pno, Pageable pageable) {
+    public void deleteCommentByPno(Long pno) {
+        List<Comment> commentList = commentRepository.findByPno(pno);
+        for (Comment comment : commentList) {
+            commentRepository.delete(comment);
+        }
+    }
+    public Page<Comment> findPagingComments(Long pno, Pageable pageable) {
         Page<Comment> comments = commentRepository.findByPno(pno, pageable);
         return comments;
+    }
+
+    public List<Comment> findComments(Long pno) {
+        return commentRepository.findByPno(pno);
     }
 
     public Comment findComment(Long commentId) {

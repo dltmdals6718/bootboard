@@ -10,13 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
-// @Transactional 이거 붙이고 안붙이고 차이도 작성하기.
+@Transactional
 public class CommentTest {
 
     @Autowired
     private SpringDataJpaCommentRepository commentRepository;
+
+    @Autowired
+    private CommentService commentService;
 
     @Test
     @DisplayName("댓글 전송")
@@ -28,6 +32,15 @@ public class CommentTest {
         comment.setRegDate(LocalDateTime.now());
         Comment saveComment = commentRepository.save(comment);
         Assertions.assertThat(comment.getWriter()).isEqualTo(saveComment.getWriter());
+    }
+
+    @Test
+    @DisplayName("해당 게시글 댓글 삭제")
+    public void commentDeleteByPno() {
+        List<Comment> commentList = commentService.findComments(232L);
+        System.out.println("commentList Size = " + commentList.size());
+        commentService.deleteCommentByPno(232L);
+        Assertions.assertThat(commentService.findComments(232L).size()).isEqualTo(0);
     }
 
 

@@ -90,9 +90,13 @@
                 makePagination(pno, comments);
 
                 comments.content.forEach(function (comment) {
-                    commentUl.append(`<li> ${comment.writer} ${comment.content} ${comment.regDate}
-                                        <form th:action="@{/comment/delete}" method="post">
-                                           <input type="hidden" name="id" th:value="${comment.id}">
+                    console.log(comment);
+                    let date = comment.regDate.split('T')[0];
+                    let time = comment.regDate.split('T')[1];
+
+                    commentUl.append(`<li> ${comment.writer} ${comment.content} ${date +" " + time}
+                                        <form action="/comment/delete" method="post">
+                                           <input type="hidden" name="id" value="${comment.id}">
                                             <button type="submit">삭제</button>
                                         </form>
                                        </li>`);
@@ -129,7 +133,6 @@
     $(document).ready(function () {
             let pno = [[${poster.id}]];
             loadComments(pno, 0);
-            console.log(pno);
         }
     );
 </script>

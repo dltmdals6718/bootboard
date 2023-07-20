@@ -39,8 +39,8 @@ public class CommentController {
 
     @GetMapping("/comments")
     @ResponseBody
-    public Page<Comment> test(@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "pno") Long pno) {
-        Page<Comment> comments = commentService.findComments(pno, pageable);
+    public Page<Comment> commentList(@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "pno") Long pno) {
+        Page<Comment> comments = commentService.findPagingComments(pno, pageable);
         return comments;
     }
 
