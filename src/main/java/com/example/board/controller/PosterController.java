@@ -51,10 +51,21 @@ public class PosterController {
     }
 
     @GetMapping("/posters")
-    public String list(Model model, @PageableDefault(sort="id", value=5, direction = Sort.Direction.DESC) Pageable pageable, String searchTitle) {
+    public String list(Model model, @RequestParam(defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "regdate") String order, @RequestParam(required = false) String searchTitle) {
+
+        Sort sort=Sort.by(Sort.Order.desc("regdate"), Sort.Order.desc("id"));
+        if(order!=null&&order.equals("comment"))
+            sort = Sort.by(Sort.Order.desc("commentCnt"), Sort.Order.asc("id"));
+
+        Pageable pageable = PageRequest.of(page, 5, sort);
+
+        model.addAttribute("page", page);
+        model.addAttribute("order", order);
+        model.addAttribute("searchTitle", searchTitle);
+
 
         Page<Poster> pageList;
-        if(searchTitle==null)
+        if(searchTitle==null || searchTitle.equals(""))
             pageList = posterService.pageList(pageable);
         else
             pageList = posterService.searchPageList(searchTitle, pageable);
@@ -78,6 +89,7 @@ public class PosterController {
 
         return "posters/posterList";
     }
+
     @GetMapping("/poster/read")
     public String read(Model model,@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "id") Long id) {
         Poster poster = posterService.findByOne(id).get();
