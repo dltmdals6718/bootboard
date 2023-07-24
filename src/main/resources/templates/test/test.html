@@ -6,68 +6,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-
-
-<ul id="message">
-
-</ul>
-
-<ul id="pagination">
-
-</ul>
-
-<!-- <a onclick="loadComments(0)">1</a>
-<a href="javascript:void(0);" onclick="loadComments(1)">2</a> -->
-
+<form method="post">
+    <input>작성자
+    <input>내용
+    <button type="submit">등록</button>
+</form>
 </body>
 </html>
 
 
 <script>
-    function loadComments(page) {
-        $.ajax({
-            type: "GET",
-            url: `api?pno=${pno}&page=${page}`,
-            dataType: "json",
-            success: function (data) {
-                let commentUl = $("#message");
-                commentUl.empty(); // 선택 요소 비우는 작업
-
-                makePagination(data);
-
-                data.content.forEach(function (comment) {
-                    commentUl.append(`<li> ${comment.writer} ${comment.content} ${comment.regDate} </li>`);
-                })
-            },
-            error: function () {
-                alert("error");
-            }
-        })
-    }
-    function makePagination(page) {
-
-        let pagination = $("#pagination");
-        pagination.empty();
-
-        let cur = page.number; // 0부터 센다.
-        let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
-        let startPage = endPage - 9; // 1~10
-        if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
-            endPage = page.totalPages;
-
-        if (cur > 0) // 이전 버튼
-            pagination.append(`<li><a onclick="loadComments(${cur - 1})">이전</a></li>`);
-
-        for (let i = startPage; i <= endPage; i++) { // 페이지네이션
-            pagination.append(`<li><a onclick="loadComments(${i - 1})">${i}</a></li>`);
-        }
-        if (cur + 1 < page.totalPages) // 다음 버튼
-            pagination.append(`<li><a onclick="loadComments(${cur + 1})">다음</a></li>`);
-    }
-
-    $(document).ready(function () {
-            // 초기 페이지를 로드합니다.
-            loadComments(0);
-        }
-    );
 </script>

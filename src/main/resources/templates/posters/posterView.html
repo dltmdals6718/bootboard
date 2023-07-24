@@ -39,16 +39,14 @@
     </div>
 
     <div class="border-top border-bottom py-3 my-3">
-        <form action="/comment/write" method="post">
             <div class="d-flex">
-                <input class="justify-content-start h-25 mx-2" placeholder="작성자" type="text" name="writer"> <br>
-                <input type="hidden" name="pno" th:value="${poster.id}">
-                <textarea class="justify-content-end w-100 mx-2" type="text" placeholder="내용" name="content"></textarea>
+                <input id="comment_writer" class="justify-content-start h-25 mx-2" placeholder="작성자" type="text"> <br>
+                <input id="comment_pno" type="hidden" th:value="${poster.id}">
+                <textarea id="comment_content" class="justify-content-end w-100 mx-2" type="text" placeholder="내용"></textarea>
             </div>
             <div class="d-flex justify-content-end mt-2">
-                <button class="btn btn-primary" type="submit">제출</button>
+                <button id="comment_submit" class="btn btn-primary">제출</button>
             </div>
-        </form>
     </div>
 
     <div>
@@ -61,23 +59,40 @@
             </ul>
         </div>
     </div>
-
-    <div>
-        <ul>
-            <li th:each="comment : ${comments}">
-                <span th:text="|${comment.writer} ${comment.content} ${#temporals.format(comment.regDate, 'yyyy.MM.dd HH:mm')}|"> </span>
-                <form th:action="@{/comment/delete}" method="post">
-                    <input type="hidden" name="id" th:value="${comment.id}">
-                    <button type="submit">삭제</button>
-                </form>
-            </li>
-        </ul>
-    </div>
 </div>
 
 <script src="/js/bootstrap.min.js"></script>
 
 <script>
+
+    document.getElementById("comment_submit").onclick = function () {
+        let writer = $("#comment_writer").val();
+        let content = $("#comment_content").val();
+        let pno = $("#comment_pno").val();
+
+        let data = {
+            writer: writer,
+            content: content,
+            pno: pno
+        };
+
+        $.ajax({
+            type: "post",
+            url: '/comment/write',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                $("#comment_writer").val('');
+                $("#comment_content").val('');
+                loadComments(pno, 0);
+            },
+            error: function(error) {
+                alert("error");
+            }
+        })
+    }
+
     function loadComments(pno, page) {
         $.ajax({
             type: "GET",
@@ -93,15 +108,12 @@
                     let date = comment.regDate.split('T')[0];
                     let time = comment.regDate.split('T')[1];
 
-                    commentUl.append(`<li> ${comment.writer} ${comment.content} ${date +" " + time}
-                                        <form action="/comment/delete" method="post">
-                                           <input type="hidden" name="id" value="${comment.id}">
-                                            <button type="submit">삭제</button>
-                                        </form>
+                    commentUl.append(`<li> ${comment.writer} ${comment.content} ${date + " " + time}
+                                        <button onclick="removeComment(${comment.pno}, ${comment.id})">삭제</button>
                                        </li>`);
                 })
             },
-            error: function () {
+            error: function() {
                 alert("error");
             }
         })
@@ -134,6 +146,22 @@
             loadComments(pno, 0);
         }
     );
+
+
+    function removeComment(pno, id) {
+        $.ajax({
+            type: "POST",
+            url: `/comment/delete?id=${id}`,
+            async: false,
+            success: function () {
+            },
+            error: function () {
+                alert('ERROR');
+            }
+        })
+
+        loadComments(pno,0);
+    }
 </script>
 </body>
 </html>
