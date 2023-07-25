@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +28,19 @@ public class CommentController {
         this.posterService = posterService;
     }
 
-    @PostMapping("/comment/write")
+    @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Comment commentWrite(@RequestBody Comment comment) {
         posterService.incrementCommentCnt(comment.getPno());
         commentService.write(comment);
         return comment;
+    }
+
+    @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String commentWrite2(@ModelAttribute Comment comment) {
+        posterService.incrementCommentCnt(comment.getPno());
+        commentService.write(comment);
+        return "redirect:/poster/read?id="+comment.getPno();
     }
     @GetMapping("/comments")
     @ResponseBody
@@ -42,7 +50,6 @@ public class CommentController {
     }
 
     @PostMapping("/comment/delete")
-    @ResponseBody
     public void commentDelete(Long id) {
         Comment comment = commentService.findComment(id);
         posterService.decreaseCommentCnt(comment.getPno());
