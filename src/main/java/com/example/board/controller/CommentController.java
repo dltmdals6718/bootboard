@@ -13,7 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CommentController {
@@ -28,10 +30,28 @@ public class CommentController {
         this.posterService = posterService;
     }
 
+    /* 버그 있음 찾아봐
+    @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Comment commentWrite(@RequestBody Comment comment, @RequestParam(required = false) Long parentCommentId) {
+
+        if(parentCommentId == null) {
+            posterService.incrementCommentCnt(comment.getPno());
+            comment.setParent(true);
+            comment.setParentCommentId(comment.getId());
+            System.out.println("comment = " + comment);
+        } else {
+            comment.setParent(false);
+            Comment parentComment = commentService.findComment(parentCommentId);
+            comment.setParentCommentId(parentComment.getId());
+        }
+
+        commentService.write(comment);
+        return comment;
+    }*/
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Comment commentWrite(@RequestBody Comment comment) {
-        posterService.incrementCommentCnt(comment.getPno());
         commentService.write(comment);
         return comment;
     }
@@ -45,15 +65,23 @@ public class CommentController {
     @GetMapping("/comments")
     @ResponseBody
     public Page<Comment> commentList(@PageableDefault(sort="id", value=10, direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(name = "pno") Long pno) {
-        Page<Comment> comments = commentService.findPagingComments(pno, pageable);
+        Page<Comment> comments = commentService.findPagingComments(pno, true, pageable);
         return comments;
     }
 
     @PostMapping("/comment/delete")
-    public void commentDelete(Long id) {
+    @ResponseBody
+    public Comment commentDelete(Long id) {
         Comment comment = commentService.findComment(id);
-        posterService.decreaseCommentCnt(comment.getPno());
+        if(comment.getIsParent())
+            posterService.decreaseCommentCnt(comment.getPno());
         commentService.deleteComment(id);
+        return comment;
+    }
+    @GetMapping("/reply")
+    @ResponseBody
+    public Map<String, Object> findReply(Long parentCommentId, int page) {
+        return commentService.findReply(parentCommentId, page);
     }
 
 }

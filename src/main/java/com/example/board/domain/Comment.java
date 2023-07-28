@@ -18,6 +18,26 @@ public class Comment {
     @Column(name="regdate")
     private LocalDateTime regDate;
 
+    // parent_comment_id, is_parent로 자동 매핑이 될까?
+    private Long parentCommentId;
+    private boolean isParent;
+
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
+
+    public boolean getIsParent() {
+        return isParent;
+    }
+
+    public void setIsParent(boolean parent) {
+        isParent = parent;
+    }
+
     public Long getId() {
         return id;
     }
@@ -56,5 +76,10 @@ public class Comment {
 
     public void setRegDate(LocalDateTime regDate) {
         this.regDate = regDate;
+    }
+    @Override
+    public String toString() {
+        String str = getId() + " " + getPno() + " " + getWriter() + " " + getIsParent() + " " + getParentCommentId();
+        return str;
     }
 }

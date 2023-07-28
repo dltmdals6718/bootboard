@@ -39,14 +39,13 @@
     </div>
 
     <div class="border-top border-bottom py-3 my-3">
-            <div class="d-flex">
-                <input id="comment_writer" class="justify-content-start h-25 mx-2" placeholder="작성자" type="text"> <br>
-                <input id="comment_pno" type="hidden" th:value="${poster.id}">
-                <textarea id="comment_content" class="justify-content-end w-100 mx-2" type="text" placeholder="내용"></textarea>
-            </div>
-            <div class="d-flex justify-content-end mt-2">
-                <button id="comment_submit" class="btn btn-primary">제출</button>
-            </div>
+        <div class="d-flex">
+            <input id="comment_writer" class="justify-content-start h-25 mx-2" placeholder="작성자" type="text"> <br>
+            <input id="comment_pno" type="hidden" th:value="${poster.id}">
+            <textarea id="comment_content" class="justify-content-end w-100 mx-2" type="text"
+                      placeholder="내용"></textarea>
+            <button id="comment_submit" class="btn btn-primary">제출</button>
+        </div>
     </div>
 
     <div>
@@ -62,7 +61,6 @@
 </div>
 
 <script src="/js/bootstrap.min.js"></script>
-
 <script>
 
     document.getElementById("comment_submit").onclick = function () {
@@ -73,7 +71,8 @@
         let data = {
             writer: writer,
             content: content,
-            pno: pno
+            pno: pno,
+            isParent: 1
         };
 
         $.ajax({
@@ -87,7 +86,7 @@
                 $("#comment_content").val('');
                 loadComments(pno, 0);
             },
-            error: function(error) {
+            error: function (error) {
                 alert("error");
             }
         })
@@ -98,6 +97,7 @@
             type: "GET",
             url: `/comments?pno=${pno}&page=${page}`,
             dataType: "json",
+            async: false,
             success: function (comments) {
                 let commentUl = $("#comments");
                 commentUl.empty(); // 선택 요소 비우는 작업
@@ -110,11 +110,123 @@
 
                     commentUl.append(`<li> ${comment.writer} ${comment.content} ${date + " " + time}
                                         <button onclick="removeComment(${comment.pno}, ${comment.id})">삭제</button>
+
+                                        <div>
+                                            <button class="reply-btn">답글 작성</button>
+                                            <div class="reply-form" style="display: none;">
+                                            <input name="writer">작성자
+                                            <input name="content">내용
+                                            <input type="hidden" name="parent_comment_id" value="${comment.id}">
+                                            <input type="hidden" name="pno" value="${comment.pno}">
+                                            <button class="reply-submit">제출</button>
+                                            </div>
+                                            <button class="reply-see" data-parent-comment-id="${comment.id}" data-show="0" style="display: block">답글 보기</button>
+                                            <ul class="reply-list" data-page="0">
+                                            </ul>
+                                            <button style="display: none">더보기</button>
+                                        </div>
                                        </li>`);
                 })
             },
-            error: function() {
+            error: function () {
                 alert("error");
+            }
+        })
+
+        const replyButtons = document.querySelectorAll(".reply-btn");
+        replyButtons.forEach(replyButton => {
+
+            replyButton.addEventListener("click", function() {
+                // 대댓글 작성 폼 토글 (보이기/숨기기)
+                const replyForm = this.nextElementSibling;
+                if (replyForm.style.display === "none") {
+                    replyForm.style.display = "block";
+                } else {
+                    replyForm.style.display = "none";
+                }
+            });
+        });
+
+        const submitButtons = document.querySelectorAll(".reply-submit");
+        submitButtons.forEach(submitButton => {
+            submitButton.addEventListener("click", function () {
+            const replyForm = this.parentElement;
+            const writerInput = replyForm.querySelector('input[name="writer"]').value;
+            const contentInput = replyForm.querySelector('input[name="content"]').value;
+            const parentCommentIdInput = replyForm.querySelector('input[name="parent_comment_id"]').value;
+            const pno = replyForm.querySelector('input[name="pno"]').value;
+            reply_data = {
+                writer: writerInput,
+                content: contentInput,
+                pno: pno,
+                parentCommentId: parentCommentIdInput
+            }
+            $.ajax({
+                type: "post",
+                url: "/comment/write",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(reply_data),
+                success: function () {
+                    loadComments(pno, 0);
+                },
+                error: function (error) {
+                    alert("error");
+                }
+            })
+        })
+        })
+
+        const replySeeBtns = document.querySelectorAll(".reply-see");
+        replySeeBtns.forEach( replySeeBtn => {
+            const parentCommentId = replySeeBtn.dataset.parentCommentId;
+            const replyList = replySeeBtn.nextElementSibling;
+            const replyMoreBtn = replyList.nextElementSibling;
+
+            replyMoreBtn.addEventListener("click", function() {
+                replyLoad(replyList, replyMoreBtn, parentCommentId)
+            });
+
+            replySeeBtn.addEventListener("click", function() {
+                if(replySeeBtn.dataset.show === "0") {
+                    replySeeBtn.dataset.show = "1";
+                } else {
+                    replyList.innerHTML="";
+                    replyList.dataset.page="0";
+                    replySeeBtn.dataset.show="0";
+                    replyMoreBtn.style.display = "none";
+                    return;
+                }
+
+                replyLoad(replyList, replyMoreBtn, parentCommentId);
+
+            })
+        })
+
+    }
+
+    function replyLoad(replyList, replyMoreBtn, parentCommentId) {
+        page = replyList.dataset.page;
+        $.ajax({
+            type: "GET",
+            url: `/reply?parentCommentId=${parentCommentId}&page=${page}`,
+            dataType: "json",
+            success: function (replys) {
+                replys.content.forEach( (reply) => {
+                    let Child = document.createElement("li");
+                    Child.append(`${reply.writer} ${reply.content} ${reply.regDate}`);
+                    replyList.appendChild(Child);
+                })
+
+                replyList.dataset.page=String(parseInt(page)+1);
+                if(replys.totalSize <= (replyList.dataset.page)*5) {
+                    replyMoreBtn.style.display = "none";
+                } else {
+                    replyMoreBtn.style.display = "block";
+                }
+            },
+            error: function () {
+                alert('error');
             }
         })
     }
@@ -147,7 +259,6 @@
         }
     );
 
-
     function removeComment(pno, id) {
         $.ajax({
             type: "POST",
@@ -160,7 +271,7 @@
             }
         })
 
-        loadComments(pno,0);
+        loadComments(pno, 0);
     }
 </script>
 </body>

@@ -22,3 +22,13 @@ CREATE TABLE comment (
     PRIMARY KEY(id),
     FOREIGN KEY(pno) REFERENCES poster(id)
 );
+
+-- 대댓글 기능 추가
+ALTER TABLE comment ADD COLUMN parent_comment_id int;
+ALTER TABLE comment ADD COLUMN is_parent int not null;
+
+UPDATE comment AS A
+INNER JOIN comment AS B ON A.id = B.id
+SET A.parent_comment_id = A.id;
+
+UPDATE comment SET is_parent = 1;
