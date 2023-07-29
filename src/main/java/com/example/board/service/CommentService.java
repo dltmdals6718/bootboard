@@ -74,4 +74,8 @@ public class CommentService {
         return m;
     }
 
+    public List<Comment> findByParentCommentIdAndIsParent(Long parentCommentId, boolean isParent) {
+        return commentRepository.findByParentCommentIdAndIsParent(parentCommentId, isParent);
+    }
+
 }

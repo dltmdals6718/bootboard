@@ -215,6 +215,13 @@
                 replys.content.forEach( (reply) => {
                     let Child = document.createElement("li");
                     Child.append(`${reply.writer} ${reply.content} ${reply.regDate}`);
+
+                    let childDelete = document.createElement("button");
+                    childDelete.innerHTML = "삭제";
+                    childDelete.addEventListener("click", function() {
+                        removeComment(reply.pno, reply.id);
+                    })
+                    Child.append(childDelete);
                     replyList.appendChild(Child);
                 })
 

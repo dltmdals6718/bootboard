@@ -73,8 +73,13 @@ public class CommentController {
     @ResponseBody
     public Comment commentDelete(Long id) {
         Comment comment = commentService.findComment(id);
-        if(comment.getIsParent())
+        if(comment.getIsParent()) {
             posterService.decreaseCommentCnt(comment.getPno());
+            List<Comment> commentList = commentService.findByParentCommentIdAndIsParent(id, false);
+            for(Comment childComment : commentList) {
+                commentService.deleteComment(childComment.getId());
+            }
+        }
         commentService.deleteComment(id);
         return comment;
     }

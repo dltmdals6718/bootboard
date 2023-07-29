@@ -13,4 +13,6 @@ public interface SpringDataJpaCommentRepository extends JpaRepository<Comment, L
     Page<Comment> findByPnoAndIsParent(Long pno, boolean isParent, Pageable pageable);
     List<Comment> findByParentCommentIdAndIsParent(Long parentCommentId, boolean isParent,Pageable pageable);
     Long countByParentCommentIdAndIsParent(Long parentCommentId, boolean isParent);
+
+    List<Comment> findByParentCommentIdAndIsParent(Long parentCommentId, boolean isParent);
 }
