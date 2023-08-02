@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="d-flex justify-content-center">
-    <form class="w-50 h-50" action="/poster/write" method="post" th:object="${poster}">
+    <form class="w-50 h-50" action="/poster/write" method="post" th:object="${poster}" enctype="multipart/form-data">
         <div class="form-floating">
             <input class="form-control" placeholder="제목" type="text" name="title" th:field="*{title}">
             <label>제목</label>
@@ -27,6 +27,7 @@
             <span th:errors="*{content}"></span><br>
         </div>
 
+        <input type="file" name="files" multiple="multiple">
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{/posters}'|">취소</button>
             <button class="btn btn-primary" type="submit">제출</button>

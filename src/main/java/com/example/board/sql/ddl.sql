@@ -32,3 +32,12 @@ INNER JOIN comment AS B ON A.id = B.id
 SET A.parent_comment_id = A.id;
 
 UPDATE comment SET is_parent = 1;
+
+create table upload_file (
+                             id bigint auto_increment,
+                             pno bigint,
+                             upload_file_name VARCHAR(255),
+                             store_file_name VARCHAR(255),
+                             PRIMARY KEY (id),
+                             FOREIGN KEY (pno) REFERENCES poster(id)
+);

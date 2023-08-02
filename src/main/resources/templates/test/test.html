@@ -6,10 +6,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<form method="post">
-    <input>작성자
-    <input>내용
-    <button type="submit">등록</button>
+<form method="post" action="/upload" enctype="multipart/form-data">
+    <input type="text" name="itemName" placeholder="상품명">
+    <input type="file" name="file">
+    <button type="submit">제출</button>
 </form>
 </body>
 </html>

@@ -2,6 +2,9 @@ package com.example.board.controller;
 
 import com.example.board.domain.Comment;
 import com.example.board.domain.Poster;
+import com.example.board.domain.UploadFile;
+import com.example.board.file.FileStore;
+import com.example.board.repository.UploadFileRepository;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import jakarta.validation.Valid;
@@ -13,9 +16,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,26 +32,35 @@ public class PosterController {
 
     private final CommentService commentService;
 
+    private FileStore fileStore;
+
+    private UploadFileRepository uploadFileRepository;
+
 
     @Autowired
-    public PosterController(PosterService posterService, CommentService commentService) {
+    public PosterController(PosterService posterService, CommentService commentService, FileStore fileStore, UploadFileRepository uploadFileRepository) {
         this.posterService = posterService;
         this.commentService = commentService;
+        this.fileStore = fileStore;
+        this.uploadFileRepository = uploadFileRepository;
     }
 
-
     @GetMapping("/poster/write")
-    public String writeForm(Model model) {
-        model.addAttribute("poster", new Poster());
+    public String writeForm(Poster poster) {
         return "posters/createPosterForm";
     }
 
     @PostMapping("/poster/write")
-    public String write(@Valid Poster poster, Errors errors) {
+    public String write(@RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster ,Errors errors) throws IOException {
+
 
         if(errors.hasErrors()) {
             return "posters/createPosterForm";
         }
+
+        List<UploadFile> uploadFiles = fileStore.storeFiles(files);
+        uploadFileRepository.saveAll(uploadFiles);
+        poster.setImgFiles(uploadFiles);
         posterService.write(poster);
         return "redirect:/";
     }
@@ -94,7 +109,10 @@ public class PosterController {
     public String read(Model model,@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "id") Long id) {
         Poster poster = posterService.findByOne(id).get();
         model.addAttribute("poster", poster);
-
+        List<UploadFile> imgFiles = poster.getImgFiles();
+        for(UploadFile file : imgFiles) {
+            System.out.println("file = " + file.getUploadFileName());
+        }
         return "posters/posterView";
     }
 
