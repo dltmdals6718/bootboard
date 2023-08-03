@@ -26,16 +26,20 @@ public class FileStore {
         List<UploadFile> storeResult = new ArrayList<>();
 
         for(MultipartFile multipartFile : multipartFiles) {
-            String uploadFileName = multipartFile.getOriginalFilename();
 
-            String uuid = UUID.randomUUID().toString();
-            int pos = uploadFileName.indexOf(".");
-            String ext = uploadFileName.substring(pos + 1);
+            if(multipartFile.getSize() > 0) {
 
-            String storeFileName = uuid + "." + ext;
+                String uploadFileName = multipartFile.getOriginalFilename();
 
-            multipartFile.transferTo(new File(getFullPath(storeFileName)));
-            storeResult.add(new UploadFile(uploadFileName, storeFileName));
+                String uuid = UUID.randomUUID().toString();
+                int pos = uploadFileName.indexOf(".");
+                String ext = uploadFileName.substring(pos + 1);
+
+                String storeFileName = uuid + "." + ext;
+
+                multipartFile.transferTo(new File(getFullPath(storeFileName)));
+                storeResult.add(new UploadFile(uploadFileName, storeFileName));
+            }
         }
         return storeResult;
     }

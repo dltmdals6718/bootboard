@@ -53,7 +53,6 @@ public class PosterController {
     @PostMapping("/poster/write")
     public String write(@RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster ,Errors errors) throws IOException {
 
-
         if(errors.hasErrors()) {
             return "posters/createPosterForm";
         }
@@ -62,7 +61,7 @@ public class PosterController {
         uploadFileRepository.saveAll(uploadFiles);
         poster.setImgFiles(uploadFiles);
         posterService.write(poster);
-        return "redirect:/";
+        return "redirect:/poster/read?id=" + poster.getId();
     }
 
     @GetMapping("/posters")
