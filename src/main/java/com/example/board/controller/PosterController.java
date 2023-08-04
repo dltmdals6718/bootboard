@@ -147,6 +147,14 @@ public class PosterController {
         return "redirect:/posters";
     }
 
+    //@PathVariable, Resource, ResponseEntity<Resource>, UrlResource
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+        System.out.println("fileStore.getFullPath(fileName) = " + fileStore.getFullPath(filename));
+        return new UrlResource("file:" + fileStore.getFullPath(filename));
+    }
+
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("id") Long fileId) throws MalformedURLException {
 
