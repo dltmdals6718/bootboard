@@ -25,6 +25,12 @@
             <th>내용</th>
             <td th:text="${poster.content}"></td>
         </tr>
+        <tr th:if="${poster.getImgFiles().size} != 0">
+            <th>첨부파일</th>
+            <td>
+                <a class="d-block" th:each="file : ${poster.imgFiles}" th:text="${file.getUploadFileName()}" th:href="|/download/${file.getId()}|"></a>
+            </td>
+        </tr>
     </table>
     <div class=" d-flex justify-content-end">
         <div class="btn-group">

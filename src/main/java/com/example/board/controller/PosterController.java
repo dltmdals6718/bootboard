@@ -9,21 +9,29 @@ import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PosterController {
@@ -138,4 +146,20 @@ public class PosterController {
         posterService.editPoster(id, poster);
         return "redirect:/posters";
     }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") Long fileId) throws MalformedURLException {
+
+        UploadFile file = uploadFileRepository.findById(fileId).get();
+        String uploadFileName = file.getUploadFileName();
+        String storeFileName = file.getStoreFileName();
+        UrlResource urlResource = new UrlResource("file:" + fileStore.getFullPath(storeFileName));
+
+        String encodeUploadFileName = UriUtils.encode(uploadFileName, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodeUploadFileName + "\"";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(urlResource);
+    }
+
 }
