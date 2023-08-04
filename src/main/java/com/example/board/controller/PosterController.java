@@ -153,6 +153,7 @@ public class PosterController {
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
         System.out.println("fileStore.getFullPath(fileName) = " + fileStore.getFullPath(filename));
         return new UrlResource("file:" + fileStore.getFullPath(filename));
+
     }
 
     @GetMapping("/download/{id}")
