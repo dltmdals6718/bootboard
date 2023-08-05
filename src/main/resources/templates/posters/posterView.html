@@ -29,6 +29,7 @@
             <th>첨부파일</th>
             <td>
                 <a class="d-block" th:each="file : ${poster.imgFiles}" th:text="${file.getUploadFileName()}" th:href="|/download/${file.getId()}|"></a>
+                <img th:each="imgFile : ${poster.imgFiles}" th:src="|/images/${imgFile.getStoreFileName()}|" width="200" height="200">
             </td>
         </tr>
     </table>

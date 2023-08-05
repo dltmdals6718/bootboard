@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,7 @@ import org.springframework.web.util.UriUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -147,13 +149,13 @@ public class PosterController {
         return "redirect:/posters";
     }
 
-    //@PathVariable, Resource, ResponseEntity<Resource>, UrlResource
-    @ResponseBody
-    @GetMapping("/images/{filename}")
-    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
-        System.out.println("fileStore.getFullPath(fileName) = " + fileStore.getFullPath(filename));
-        return new UrlResource("file:" + fileStore.getFullPath(filename));
 
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable String filename) throws IOException {
+        UrlResource resource = new UrlResource("file:" + fileStore.getFullPath(filename));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(resource.getFile().toPath()))
+                .body(resource);
     }
 
     @GetMapping("/download/{id}")
