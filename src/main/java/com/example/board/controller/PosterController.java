@@ -7,6 +7,7 @@ import com.example.board.file.FileStore;
 import com.example.board.repository.UploadFileRepository;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
+import com.example.board.service.UploadFileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -44,15 +45,14 @@ public class PosterController {
 
     private FileStore fileStore;
 
-    private UploadFileRepository uploadFileRepository;
-
+    private UploadFileService uploadFileService;
 
     @Autowired
-    public PosterController(PosterService posterService, CommentService commentService, FileStore fileStore, UploadFileRepository uploadFileRepository) {
+    public PosterController(PosterService posterService, CommentService commentService, FileStore fileStore, UploadFileService uploadFileService) {
         this.posterService = posterService;
         this.commentService = commentService;
         this.fileStore = fileStore;
-        this.uploadFileRepository = uploadFileRepository;
+        this.uploadFileService = uploadFileService;
     }
 
     @GetMapping("/poster/write")
@@ -68,7 +68,7 @@ public class PosterController {
         }
 
         List<UploadFile> uploadFiles = fileStore.storeFiles(files);
-        uploadFileRepository.saveAll(uploadFiles);
+        uploadFileService.saveAll(uploadFiles);
         poster.setImgFiles(uploadFiles);
         posterService.write(poster);
         return "redirect:/poster/read?id=" + poster.getId();
@@ -128,6 +128,10 @@ public class PosterController {
     @GetMapping("/poster/delete")
     public String delete(@RequestParam(value="id") Long id) {
         commentService.deleteCommentByPno(id);
+        List<UploadFile> uploadFileList = uploadFileService.findByPno(id);
+        for (UploadFile uploadFile : uploadFileList) {
+            uploadFileService.deleteUploadFile(uploadFile);
+        }
         posterService.deletePoster(id);
         return "redirect:/posters";
     }
@@ -161,7 +165,7 @@ public class PosterController {
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("id") Long fileId) throws MalformedURLException {
 
-        UploadFile file = uploadFileRepository.findById(fileId).get();
+        UploadFile file = uploadFileService.findById(fileId);
         String uploadFileName = file.getUploadFileName();
         String storeFileName = file.getStoreFileName();
         UrlResource urlResource = new UrlResource("file:" + fileStore.getFullPath(storeFileName));
