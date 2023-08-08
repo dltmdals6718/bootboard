@@ -27,7 +27,10 @@
             <span th:errors="*{content}"></span><br>
         </div>
 
-        <input type="file" name="files" multiple="multiple">
+        <input type="file" name="files" multiple="multiple" onchange="test(this.files)">
+        <div id="file-list">
+
+        </div>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{/posters}'|">취소</button>
             <button class="btn btn-primary" type="submit">제출</button>
@@ -36,4 +39,27 @@
 </div>
 </body>
 <script src="/js/bootstrap.min.js"></script>
+<script>
+    function test(files) {
+        const fileList = document.getElementById('file-list');
+        fileList.innerText = '';
+        for(let i=0; i<files.length; i++) {
+            const item = document.createElement('div');
+            const fileName = document.createTextNode(files[i].name);
+            const deleteButton = document.createElement('button');
+            deleteButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                deleteFile(files[i]);
+            });
+            deleteButton.innerText="X";
+            item.appendChild(fileName);
+            item.appendChild(deleteButton);
+            fileList.appendChild(item);
+        }
+    }
+
+    function deleteFile(file) {
+        console.log(file.name);
+    }
+</script>
 </html>

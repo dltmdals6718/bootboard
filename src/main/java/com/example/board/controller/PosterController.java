@@ -139,17 +139,19 @@ public class PosterController {
     @GetMapping("/poster/edit")
     public String editForm(Model model, @RequestParam(value="id") Long id) {
         Poster poster = posterService.findByOne(id).get();
-        model.addAttribute(poster);
+        List<UploadFile> uploadFiles = uploadFileService.findByPno(id);
+        model.addAttribute("poster", poster);
+        model.addAttribute("files", uploadFiles);
         return "posters/editPosterForm";
     }
 
     @PostMapping("/poster/edit")
-    public String edit(@RequestParam(value="id") Long id, @Valid Poster poster, Errors errors) {
+    public String edit(@RequestParam(value="id") Long id,@RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster, Errors errors) throws IOException {
 
         if(errors.hasErrors()) {
             return "posters/editPosterForm";
         }
-        posterService.editPoster(id, poster);
+        posterService.editPoster(id, poster, files);
         return "redirect:/posters";
     }
 
