@@ -29,7 +29,6 @@
 
         <input type="file" name="files" multiple="multiple" onchange="test(this.files)">
         <div id="file-list">
-
         </div>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{/posters}'|">취소</button>
@@ -40,14 +39,19 @@
 </body>
 <script src="/js/bootstrap.min.js"></script>
 <script>
+
+    let selectedFiles = [];
+
     function test(files) {
+        console.log(files);
         const fileList = document.getElementById('file-list');
-        fileList.innerText = '';
         for(let i=0; i<files.length; i++) {
+            selectedFiles.push(files[i]);
             const item = document.createElement('div');
             const fileName = document.createTextNode(files[i].name);
             const deleteButton = document.createElement('button');
             deleteButton.addEventListener('click', (event) => {
+                item.remove();
                 event.preventDefault();
                 deleteFile(files[i]);
             });
@@ -58,8 +62,14 @@
         }
     }
 
-    function deleteFile(file) {
-        console.log(file.name);
+    function deleteFile(deleteFile) {
+        const inputFile = document.querySelector('input[name="files"]');
+        const dataTransfer = new DataTransfer();
+        selectedFiles = selectedFiles.filter(file => file!==deleteFile);
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        })
+        inputFile.files = dataTransfer.files;
     }
 </script>
 </html>
