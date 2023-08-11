@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 public class PosterTest {
@@ -61,6 +63,13 @@ public class PosterTest {
         for (Poster poster : result) {
             System.out.println("poster id: "+ poster.getId() );
         }
+    }
 
+    @Test
+    public void nullIterTest() {
+        List<Long> list = null;
+        for (Long aLong : list) {
+            System.out.println("aLong = " + aLong);
+        }
     }
 }

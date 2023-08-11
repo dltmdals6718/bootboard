@@ -38,6 +38,14 @@ public class UploadFileService {
         uploadFileRepository.delete(uploadFile);
     }
 
+    public void deleteByIds(List<Long> deleteFileIds) {
+
+        List<UploadFile> deleteFiles = uploadFileRepository.findAllById(deleteFileIds);
+        for (UploadFile deleteFile : deleteFiles) {
+            deleteUploadFile(deleteFile); // 파일 삭제와 DB삭제 메서드
+        }
+
+    }
     public UploadFile findById(Long id) {
         return uploadFileRepository.findById(id).get();
     }

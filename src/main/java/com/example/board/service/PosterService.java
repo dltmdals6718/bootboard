@@ -50,21 +50,22 @@ public class PosterService {
         posterRepository.deleteById(id);
     }
 
-    public void editPoster(Long id, Poster newPoster, List<MultipartFile> files) throws IOException {
+    public void editPoster(Long id, Poster newPoster, List<MultipartFile> files, List<Long> deleteFilesId) throws IOException {
         Poster oldPoster = posterRepository.findById(id).get();
         oldPoster.setTitle(newPoster.getTitle());
         oldPoster.setWriter(newPoster.getWriter());
         oldPoster.setContent(newPoster.getContent());
         oldPoster.setRegdate(LocalDateTime.now());
 
-        List<UploadFile> imgFiles = oldPoster.getImgFiles();
-        for (UploadFile imgFile : imgFiles) {
-            uploadFileService.deleteUploadFile(imgFile);
-        }
 
         List<UploadFile> uploadFiles = fileStore.storeFiles(files);
         uploadFileService.saveAll(uploadFiles);
-        oldPoster.setImgFiles(uploadFiles);
+        for (UploadFile uploadFile : uploadFiles) {
+            oldPoster.getImgFiles().add(uploadFile);
+        }
+        if(deleteFilesId != null) // null일때 iter 돌리면 NullPointerException 터짐..
+            uploadFileService.deleteByIds(deleteFilesId);
+
     }
 
     public Page<Poster> pageList(Pageable pageable) {

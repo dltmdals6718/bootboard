@@ -9,6 +9,7 @@ import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import com.example.board.service.UploadFileService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +36,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
+@Slf4j
 @Controller
 public class PosterController {
 
@@ -139,19 +144,20 @@ public class PosterController {
     @GetMapping("/poster/edit")
     public String editForm(Model model, @RequestParam(value="id") Long id) {
         Poster poster = posterService.findByOne(id).get();
-        List<UploadFile> uploadFiles = uploadFileService.findByPno(id);
         model.addAttribute("poster", poster);
-        model.addAttribute("files", uploadFiles);
         return "posters/editPosterForm";
     }
 
     @PostMapping("/poster/edit")
-    public String edit(@RequestParam(value="id") Long id,@RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster, Errors errors) throws IOException {
+    public String edit(@RequestParam(value="id") Long id,
+                       @RequestParam(required = false) List<MultipartFile> files,
+                       @RequestParam(required = false) List<Long> deleteFilesId,
+                       @Valid Poster poster, Errors errors) throws IOException {
 
         if(errors.hasErrors()) {
             return "posters/editPosterForm";
         }
-        posterService.editPoster(id, poster, files);
+        posterService.editPoster(id, poster, files, deleteFilesId);
         return "redirect:/posters";
     }
 
