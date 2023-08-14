@@ -6,16 +6,21 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
+<style>
+    th, td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
 <div class="contents container w-75">
 
     <div>
         <div class="d-flex justify-content-start float-start">
-            <button th:onclick="|location.href='@{/posters(order=regdate, searchTitle=${searchTitle})}'|">최신순</button>
-            <button th:onclick="|location.href='@{/posters(order=comment, searchTitle=${searchTitle})}'|">댓글순</button>
+            <button th:onclick="|location.href='@{/posters/{category}(category=${category}, order=regdate, searchTitle=${searchTitle})}'|">최신순</button>
+            <button th:onclick="|location.href='@{/posters/{category}(category=${category}, order=comment, searchTitle=${searchTitle})}'|">댓글순</button>
         </div>
         <div class="d-flex justify-content-end">
-            <form action="/posters" method="get">
+            <form th:action="@{/posters/{category}(category=${category})}" method="get">
                 <input type="text" name="searchTitle">
                 <button type="submit">검색</button>
             </form>
@@ -36,7 +41,7 @@
         <tr th:each="poster : ${posters}" height="70">
             <td th:text="${poster.id}"></td>
             <td><img width="50" height="50" th:if="${poster.getImgFiles().size()}!=0" th:src="|/images/${poster.getImgFiles().get(0).getStoreFileName()}|"></td>
-            <td><a th:text="|${poster.title} [${poster.commentCnt}]|" th:href="@{/poster/read(id=${poster.id})}"></a>
+            <td><a th:text="|${poster.title} [${poster.commentCnt}]|" th:href="@{|/posters/view/${poster.id}|}"></a>
             </td>
             <td th:text="${poster.writer}"></td>
             <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
@@ -45,24 +50,27 @@
 
     <div>
 
-        <button type="button" class="btn btn-primary float-end" th:onclick="|location.href='@{/poster/write}'|">작성하기
+        <button type="button" class="btn btn-primary float-end" th:onclick="|location.href='@{|/posters/${category}/write|}'|">작성하기
+        <!-- th:onclick="'location.href=\'/posters/' + @{${category}} + '/write\''">작성하기2 -->
         </button>
         <nav class="nav justify-content-center">
             <ul class="pagination">
-                <li class="page-item" th:if="${hasPrevious}"><a class="page-link" th:href="@{/posters(page=${previous}, order=${order}, searchTitle=${searchTitle})}">이전</a>
+                <li class="page-item" th:if="${hasPrevious}"><a class="page-link" th:href="@{/posters/{category}(category=${category}, page=${previous}, order=${order}, searchTitle=${searchTitle})}">이전</a>
                 </li>
                 <th:block th:unless="${posters.isEmpty()}" th:each="num : ${#numbers.sequence(startPage,endPage)}">
                     <li class="page-item">
                          <a class="page-link" th:text="${num}"
-                           th:href="@{/posters(page=${num}-1, order=${order}, searchTitle=${searchTitle})}"></a>
+                           th:href="@{/posters/{category}(category=${category}, page=${num}-1, order=${order}, searchTitle=${searchTitle})}"></a>
                     </li>
                 </th:block>
-                <li class="page-item" th:if="${hasNext}"><a class="page-link" th:href="@{/posters(page=${next}, order=${order}, searchTitle=${searchTitle})}">다음</a>
+                <li class="page-item" th:if="${hasNext}"><a class="page-link" th:href="@{/posters/{category}(category=${category}, page=${next}, order=${order}, searchTitle=${searchTitle})}">다음</a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
+<a href="/posters/FREE">자유 게시판</a>
+<a href="/posters/QUESTION">질문 게시판</a>
 <script src="/js/bootstrap.min.js"></script>
 
 </body>
