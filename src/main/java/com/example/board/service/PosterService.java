@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.domain.Category;
 import com.example.board.domain.Poster;
 import com.example.board.domain.UploadFile;
 import com.example.board.file.FileStore;
@@ -68,12 +69,13 @@ public class PosterService {
 
     }
 
-    public Page<Poster> pageList(Pageable pageable) {
-        return posterRepository.findAll(pageable);
+    public Page<Poster> pageList(Category category, Pageable pageable) {
+        return posterRepository.findByCategory(category, pageable);
     }
 
-    public Page<Poster> searchPageList(String title, Pageable pageable) {
-        return posterRepository.findByTitleContaining(title, pageable);
+    public Page<Poster> searchPageList(Category category, String title, Pageable pageable) {
+        return posterRepository.findByCategoryAndTitleContaining(category, title, pageable);
+        //return posterRepository.findByTitleContaining(title, pageable);
     }
 
     public void incrementCommentCnt(Long id) {
