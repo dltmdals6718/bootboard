@@ -1,5 +1,6 @@
 package com.example.board.controller;
 
+import com.example.board.domain.Category;
 import com.example.board.domain.Comment;
 import com.example.board.domain.Poster;
 import com.example.board.domain.UploadFile;
@@ -60,27 +61,31 @@ public class PosterController {
         this.uploadFileService = uploadFileService;
     }
 
-    @GetMapping("/poster/write")
-    public String writeForm(Poster poster) {
+    @GetMapping("/posters/{category}/write")
+    public String writeForm(@PathVariable Category category, Model model, @ModelAttribute Poster poster) {// @ModelAttribute라 Model에 model.addAttribute("poster", poster)가 자동 등록됨.
+        model.addAttribute("category", category);
         return "posters/createPosterForm";
     }
 
-    @PostMapping("/poster/write")
-    public String write(@RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster ,Errors errors) throws IOException {
+    @PostMapping("/posters/{category}")
+    public String write(@PathVariable("category") Category category, @RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster , Errors errors) throws IOException {
 
         if(errors.hasErrors()) {
             return "posters/createPosterForm";
         }
 
-        List<UploadFile> uploadFiles = fileStore.storeFiles(files);
-        uploadFileService.saveAll(uploadFiles);
-        poster.setImgFiles(uploadFiles);
+        poster.setCategory(category);
+        if(files!=null) {
+            List<UploadFile> uploadFiles = fileStore.storeFiles(files);
+            uploadFileService.saveAll(uploadFiles);
+            poster.setImgFiles(uploadFiles);
+        }
         posterService.write(poster);
-        return "redirect:/poster/read?id=" + poster.getId();
+        return "redirect:/posters/view/"+poster.getId();
     }
 
-    @GetMapping("/posters")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "regdate") String order, @RequestParam(required = false) String searchTitle) {
+    @GetMapping("/posters/{category}")
+    public String list(@PathVariable("category") Category category, Model model, @RequestParam(defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "regdate") String order, @RequestParam(required = false) String searchTitle) {
 
         Sort sort=Sort.by(Sort.Order.desc("regdate"), Sort.Order.desc("id"));
         if(order!=null&&order.equals("comment"))
@@ -95,9 +100,9 @@ public class PosterController {
 
         Page<Poster> pageList;
         if(searchTitle==null || searchTitle.equals(""))
-            pageList = posterService.pageList(pageable);
+            pageList = posterService.pageList(category, pageable);
         else
-            pageList = posterService.searchPageList(searchTitle, pageable);
+            pageList = posterService.searchPageList(category, searchTitle, pageable);
 
         model.addAttribute("posters", pageList);
         model.addAttribute("postersSize", pageList.isEmpty());
@@ -116,29 +121,33 @@ public class PosterController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("startPage", startPage);
 
+        model.addAttribute("category", category);
+
         return "posters/posterList";
     }
 
-    @GetMapping("/poster/read")
-    public String read(Model model,@PageableDefault(sort="id", value=5, direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(name = "id") Long id) {
+    @GetMapping("/posters/view/{id}")
+    public String read(@PathVariable Long id, Model model) {
         Poster poster = posterService.findByOne(id).get();
         model.addAttribute("poster", poster);
         List<UploadFile> imgFiles = poster.getImgFiles();
         for(UploadFile file : imgFiles) {
             System.out.println("file = " + file.getUploadFileName());
         }
+        model.addAttribute("category", poster.getCategory());
         return "posters/posterView";
     }
 
     @GetMapping("/poster/delete")
     public String delete(@RequestParam(value="id") Long id) {
+        Category category = posterService.findByOne(id).get().getCategory();
         commentService.deleteCommentByPno(id);
         List<UploadFile> uploadFileList = uploadFileService.findByPno(id);
         for (UploadFile uploadFile : uploadFileList) {
             uploadFileService.deleteUploadFile(uploadFile);
         }
         posterService.deletePoster(id);
-        return "redirect:/posters";
+        return "redirect:/posters/" + category;
     }
 
     @GetMapping("/poster/edit")
@@ -157,8 +166,9 @@ public class PosterController {
         if(errors.hasErrors()) {
             return "posters/editPosterForm";
         }
+        Category category = posterService.findByOne(id).get().getCategory();
         posterService.editPoster(id, poster, files, deleteFilesId);
-        return "redirect:/posters";
+        return "redirect:/posters/" + category;
     }
 
 
