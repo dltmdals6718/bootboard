@@ -3,13 +3,10 @@ package com.example.board.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,6 +32,10 @@ public class Poster {
     @OneToMany
     @JoinColumn(name="pno")
     private List<UploadFile> imgFiles;
+
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
 
     @Column(name="comment_cnt")
     private int commentCnt;
