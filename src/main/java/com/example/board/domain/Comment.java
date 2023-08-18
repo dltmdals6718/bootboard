@@ -10,7 +10,7 @@ public class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long pno;
+    private Long pno; // 외래 키 매핑해보자.
     private String writer;
 
     private String content;

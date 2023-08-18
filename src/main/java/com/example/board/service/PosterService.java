@@ -48,6 +48,10 @@ public class PosterService {
     }
 
     public void deletePoster(Long id) {
+        List<UploadFile> imgFiles = posterRepository.findById(id).get().getImgFiles();
+        for (UploadFile imgFile : imgFiles) {
+            uploadFileService.deleteUploadFile(imgFile);
+        }
         posterRepository.deleteById(id);
     }
 

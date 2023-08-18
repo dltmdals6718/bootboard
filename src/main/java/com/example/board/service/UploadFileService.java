@@ -35,14 +35,14 @@ public class UploadFileService {
         File file = new File(fullPath);
         if(file.exists())
             file.delete();
-        uploadFileRepository.delete(uploadFile);
     }
 
     public void deleteByIds(List<Long> deleteFileIds) {
 
         List<UploadFile> deleteFiles = uploadFileRepository.findAllById(deleteFileIds);
         for (UploadFile deleteFile : deleteFiles) {
-            deleteUploadFile(deleteFile); // 파일 삭제와 DB삭제 메서드
+            uploadFileRepository.deleteById(deleteFile.getId()); // DB 삭제
+            deleteUploadFile(deleteFile); // 파일 삭제
         }
 
     }

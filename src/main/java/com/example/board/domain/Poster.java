@@ -3,6 +3,7 @@ package com.example.board.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +30,7 @@ public class Poster {
 
     private LocalDateTime regdate;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name="pno")
     private List<UploadFile> imgFiles;
 

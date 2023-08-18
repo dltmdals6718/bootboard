@@ -1,5 +1,6 @@
 package com.example.board.repository;
 
+import com.example.board.domain.Poster;
 import com.example.board.domain.UploadFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 

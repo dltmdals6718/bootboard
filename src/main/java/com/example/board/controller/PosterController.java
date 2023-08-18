@@ -1,11 +1,9 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Category;
-import com.example.board.domain.Comment;
 import com.example.board.domain.Poster;
 import com.example.board.domain.UploadFile;
 import com.example.board.file.FileStore;
-import com.example.board.repository.UploadFileRepository;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import com.example.board.service.UploadFileService;
@@ -18,14 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,11 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Controller
@@ -77,7 +67,7 @@ public class PosterController {
         poster.setCategory(category);
         if(files!=null) {
             List<UploadFile> uploadFiles = fileStore.storeFiles(files);
-            uploadFileService.saveAll(uploadFiles);
+            //uploadFileService.saveAll(uploadFiles); cascade 작성으로인해 불필요한 코드
             poster.setImgFiles(uploadFiles);
         }
         posterService.write(poster);
@@ -142,10 +132,6 @@ public class PosterController {
     public String delete(@RequestParam(value="id") Long id) {
         Category category = posterService.findByOne(id).get().getCategory();
         commentService.deleteCommentByPno(id);
-        List<UploadFile> uploadFileList = uploadFileService.findByPno(id);
-        for (UploadFile uploadFile : uploadFileList) {
-            uploadFileService.deleteUploadFile(uploadFile);
-        }
         posterService.deletePoster(id);
         return "redirect:/posters/" + category;
     }
