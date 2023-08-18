@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -68,6 +69,9 @@ public class PosterController {
         if(files!=null) {
             List<UploadFile> uploadFiles = fileStore.storeFiles(files);
             //uploadFileService.saveAll(uploadFiles); cascade 작성으로인해 불필요한 코드
+            for (UploadFile uploadFile : uploadFiles) {
+                uploadFile.setPoster(poster);
+            }
             poster.setImgFiles(uploadFiles);
         }
         posterService.write(poster);

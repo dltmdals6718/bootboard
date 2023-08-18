@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,9 +31,8 @@ public class Poster {
 
     private LocalDateTime regdate;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name="pno")
-    private List<UploadFile> imgFiles;
+    @OneToMany(mappedBy = "poster", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<UploadFile> imgFiles = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Category category;
