@@ -64,9 +64,9 @@ public class PosterService {
 
 
         List<UploadFile> uploadFiles = fileStore.storeFiles(files);
-        uploadFileService.saveAll(uploadFiles);
         for (UploadFile uploadFile : uploadFiles) {
             oldPoster.getImgFiles().add(uploadFile);
+            uploadFile.setPoster(oldPoster);
         }
         if(deleteFilesId != null) // null일때 iter 돌리면 NullPointerException 터짐..
             uploadFileService.deleteByIds(deleteFilesId);
