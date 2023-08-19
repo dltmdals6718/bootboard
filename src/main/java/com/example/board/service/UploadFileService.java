@@ -3,6 +3,7 @@ package com.example.board.service;
 import com.example.board.domain.Poster;
 import com.example.board.domain.UploadFile;
 import com.example.board.file.FileStore;
+import com.example.board.repository.SpringDataJpaPosterRepository;
 import com.example.board.repository.UploadFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -15,14 +16,15 @@ import java.util.List;
 public class UploadFileService {
 
     private UploadFileRepository uploadFileRepository;
+    private SpringDataJpaPosterRepository posterRepository;
     private FileStore fileStore;
-    private PosterService posterService;
+
 
     @Autowired
-    public UploadFileService(UploadFileRepository uploadFileRepository, FileStore fileStore, PosterService posterService) {
+    public UploadFileService(UploadFileRepository uploadFileRepository, SpringDataJpaPosterRepository posterRepository, FileStore fileStore) {
         this.uploadFileRepository = uploadFileRepository;
+        this.posterRepository = posterRepository;
         this.fileStore = fileStore;
-        this.posterService = posterService;
     }
 
     public void saveAll(List<UploadFile> iter) {
@@ -30,9 +32,8 @@ public class UploadFileService {
     }
 
     public List<UploadFile> findByPno(Long pno) {
-        Poster poster = posterService.findByOne(pno).get();
+        Poster poster = posterRepository.findById(pno).get();
         return uploadFileRepository.findByPoster(poster);
-        //return uploadFileRepository.findByPno(pno);
     }
 
     public void deleteUploadFile(UploadFile uploadFile) {

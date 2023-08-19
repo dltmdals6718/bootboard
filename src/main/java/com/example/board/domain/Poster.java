@@ -1,6 +1,9 @@
 package com.example.board.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -14,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+
 public class Poster {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +35,7 @@ public class Poster {
 
     private LocalDateTime regdate;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "poster", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<UploadFile> imgFiles = new ArrayList<>();
 

@@ -1,6 +1,8 @@
 package com.example.board.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -19,6 +21,7 @@ public class UploadFile {
 
     @ManyToOne
     @JoinColumn(name="pno")
+    @JsonManagedReference
     private Poster poster;
 
     private String uploadFileName; // 업로드한 파일명
