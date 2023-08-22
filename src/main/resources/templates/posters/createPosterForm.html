@@ -6,35 +6,43 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1 th:text="|현재 카테고리: ${category}|"></h1> <br>
 <div class="d-flex justify-content-center">
-    <form class="w-50 h-50" th:action="@{|/posters/${category}|}" method="post" th:object="${poster}" enctype="multipart/form-data">
+    <form class="w-50 h-50" th:action="@{|/posters/${category}|}" method="post" th:object="${poster}"
+          enctype="multipart/form-data">
         <div class="form-floating">
-            <input class="form-control" placeholder="제목" type="text" name="title" th:field="*{title}">
-            <label>제목</label>
-            <span th:errors="*{title}"></span><br>
-        </div>
 
-        <div class="form-floating">
-            <input class="form-control" placeholder="작성자" type="text" name="writer" th:field="*{writer}">
-            <label>작성자</label>
-            <span th:errors="*{writer}"></span><br>
-        </div>
+            <div>
+                <input type="checkbox" th:field="*{fix}">
+                <label th:text="'상단 고정'"></label>
+            </div>
+            <div>
+                <input class="form-control" placeholder="제목" type="text" name="title" th:field="*{title}">
+                <label>제목</label>
+                <span th:errors="*{title}"></span><br>
+            </div>
 
-        <div class="form-floating">
+            <div class="form-floating">
+                <input class="form-control" placeholder="작성자" type="text" name="writer" th:field="*{writer}">
+                <label>작성자</label>
+                <span th:errors="*{writer}"></span><br>
+            </div>
+
+            <div class="form-floating">
         <textarea class="form-control" placeholder="내용" type="text" name="content" th:field="*{content}"
                   style="height: 100px"></textarea>
-            <label>내용</label>
-            <span th:errors="*{content}"></span><br>
-        </div>
+                <label>내용</label>
+                <span th:errors="*{content}"></span><br>
+            </div>
 
-        <input type="file" name="files" multiple="multiple" onchange="test(this.files)">
-        <div id="file-list">
-        </div>
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{|/posters/${category}|}'|">취소</button>
-            <button class="btn btn-primary" type="submit">제출</button>
-        </div>
+            <input type="file" name="files" multiple="multiple" onchange="test(this.files)">
+            <div id="file-list">
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-primary mx-1"
+                        th:onclick="|location.href='@{|/posters/${category}|}'|">취소
+                </button>
+                <button class="btn btn-primary" type="submit">제출</button>
+            </div>
     </form>
 </div>
 </body>
@@ -46,7 +54,7 @@
     function test(files) {
         console.log(files);
         const fileList = document.getElementById('file-list');
-        for(let i=0; i<files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
             selectedFiles.push(files[i]);
             const item = document.createElement('div');
             const fileName = document.createTextNode(files[i].name);

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SpringDataJpaPosterRepository extends JpaRepository<Poster, Long> {
@@ -15,4 +16,6 @@ public interface SpringDataJpaPosterRepository extends JpaRepository<Poster, Lon
     Page<Poster> findByCategoryAndTitleContaining(Category category, String title, Pageable pageable);
     // Page<Poster> findByTitleContainingAndCategory(Category category, String title, Pageable pageable); 순서 주의!
     Page<Poster> findByCategory(Category category, Pageable pageable);
+
+    List<Poster> findByCategoryAndFix(Category category, Boolean fix);
 }

@@ -117,6 +117,8 @@ public class PosterController {
 
         model.addAttribute("category", category);
 
+        List<Poster> fixedPoster = posterService.fixPosterList(category, true);
+        model.addAttribute("fixedPosters", fixedPoster);
         return "posters/posterList";
     }
 

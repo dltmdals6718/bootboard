@@ -61,7 +61,7 @@ public class PosterService {
         oldPoster.setWriter(newPoster.getWriter());
         oldPoster.setContent(newPoster.getContent());
         oldPoster.setRegdate(LocalDateTime.now());
-
+        oldPoster.setFix(newPoster.getFix());
 
         List<UploadFile> uploadFiles = fileStore.storeFiles(files);
         for (UploadFile uploadFile : uploadFiles) {
@@ -80,6 +80,10 @@ public class PosterService {
     public Page<Poster> searchPageList(Category category, String title, Pageable pageable) {
         return posterRepository.findByCategoryAndTitleContaining(category, title, pageable);
         //return posterRepository.findByTitleContaining(title, pageable);
+    }
+
+    public List<Poster> fixPosterList(Category category, Boolean fix) {
+        return posterRepository.findByCategoryAndFix(category, fix);
     }
 
     public void incrementCommentCnt(Long id) {

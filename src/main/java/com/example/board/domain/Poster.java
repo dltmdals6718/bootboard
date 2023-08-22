@@ -42,6 +42,7 @@ public class Poster {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    private Boolean fix;
 
     @Column(name="comment_cnt")
     private int commentCnt;

@@ -41,3 +41,15 @@ create table upload_file (
                              PRIMARY KEY (id),
                              FOREIGN KEY (pno) REFERENCES poster(id)
 );
+
+alter table poster add fix boolean; -- BOOLEAN = tinyint(1) --
+
+/* create table notice(
+    id bigint,
+    title varchar(255),
+    writer varchar(255),
+    content varchar(255),
+    regdate DATETIME,
+    category VARCHAR(255),
+    PRIMARY KEY (id)
+); */

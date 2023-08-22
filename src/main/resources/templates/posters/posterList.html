@@ -33,6 +33,15 @@
         <th>title</th>
         <th>writer</th>
         <th>date</th>
+        <tr th:each="fixedPoster : ${fixedPosters}" style="background-color: whitesmoke">
+            <td th:text="[알림]" style="color: green"></td>
+            <td><img width="50" height="50" th:if="${fixedPoster.getImgFiles().size()}!=0" th:src="|/images/${fixedPoster.getImgFiles().get(0).getStoreFileName()}|"></td>
+            <td><a th:text="|${fixedPoster.title} [${fixedPoster.commentCnt}]|" th:href="@{|/posters/view/${fixedPoster.id}|}" style="text-decoration-line: none;"></a>
+            </td>
+            <td th:text="${fixedPoster.writer}"></td>
+            <td th:text="${#temporals.format(fixedPoster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
+        </tr>
+
         <tr th:if="${posters.isEmpty()}">
             <td colspan="4">게시글이 존재하지 않습니다.</td>
         </tr>
@@ -41,7 +50,7 @@
         <tr th:each="poster : ${posters}" height="70">
             <td th:text="${poster.id}"></td>
             <td><img width="50" height="50" th:if="${poster.getImgFiles().size()}!=0" th:src="|/images/${poster.getImgFiles().get(0).getStoreFileName()}|"></td>
-            <td><a th:text="|${poster.title} [${poster.commentCnt}]|" th:href="@{|/posters/view/${poster.id}|}"></a>
+            <td><a th:text="|${poster.title} [${poster.commentCnt}]|" th:href="@{|/posters/view/${poster.id}|}" style="text-decoration-line: none;"></a>
             </td>
             <td th:text="${poster.writer}"></td>
             <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
