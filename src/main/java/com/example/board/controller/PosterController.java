@@ -53,16 +53,22 @@ public class PosterController {
     }
 
     @GetMapping("/posters/{category}/write")
-    public String writeForm(@PathVariable Category category, Model model, @ModelAttribute Poster poster) {// @ModelAttribute라 Model에 model.addAttribute("poster", poster)가 자동 등록됨.
+    public String writeForm(@PathVariable Category category, Model model) {// @ModelAttribute라 Model에 model.addAttribute("poster", poster)가 자동 등록됨.
         model.addAttribute("category", category);
+        model.addAttribute("poster", new Poster());
+        // createPosterForm에서 Poster 객체를 사용하기에 빈 객체를 넘겨주자.
+        // 이렇게 작서함으로써 Poster 데이터를 재사용할 수 있다. (검증시 재사용)
+
         return "posters/createPosterForm";
     }
 
     @PostMapping("/posters/{category}")
-    public String write(@PathVariable("category") Category category, @RequestParam(required = false) List<MultipartFile> files, @Valid Poster poster , Errors errors) throws IOException {
+    public String write(@PathVariable("category") Category category, @RequestParam(required = false) List<MultipartFile> files, @ModelAttribute @Valid Poster poster , Errors errors) throws IOException {
 
         if(errors.hasErrors()) {
             return "posters/createPosterForm";
+            // createPosterForm으로 넘어갈때 @ModelAttribute Poster가 model.addAttribute하기에
+            // 기존의 입력 Poster 값이 유지가된다.
         }
 
         poster.setCategory(category);
