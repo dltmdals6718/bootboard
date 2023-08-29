@@ -62,6 +62,8 @@ public class PosterService {
         oldPoster.setContent(newPoster.getContent());
         oldPoster.setRegdate(LocalDateTime.now());
         oldPoster.setFix(newPoster.getFix());
+        oldPoster.setHeight(newPoster.getHeight());
+        oldPoster.setWeight(newPoster.getWeight());
 
         List<UploadFile> uploadFiles = fileStore.storeFiles(files);
         for (UploadFile uploadFile : uploadFiles) {

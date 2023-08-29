@@ -9,13 +9,12 @@
 <div class="d-flex justify-content-center">
     <form class="w-50 h-50" th:action="@{|/posters/${category}|}" method="post" th:object="${poster}"
           enctype="multipart/form-data">
-        <div class="form-floating">
-
             <div>
                 <input type="checkbox" th:field="*{fix}">
                 <label th:text="'상단 고정'"></label>
             </div>
-            <div>
+
+            <div class="form-floating">
                 <input class="form-control" placeholder="제목" type="text" name="title" th:field="*{title}">
                 <label>제목</label>
                 <span th:errors="*{title}"></span><br>
@@ -28,10 +27,28 @@
             </div>
 
             <div class="form-floating">
-        <textarea class="form-control" placeholder="내용" type="text" name="content" th:field="*{content}"
+                <textarea class="form-control" placeholder="내용" type="text" name="content" th:field="*{content}"
                   style="height: 100px"></textarea>
                 <label>내용</label>
                 <span th:errors="*{content}"></span><br>
+            </div>
+
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="키" type="text" id="height" name="height" th:field="*{height}"
+                          style="height: 100px"></textarea>
+                <label for="height">키</label>
+                <span th:errors="*{height}"></span><br>
+            </div>
+
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="몸무게" type="text" id="weight" name="weight" th:field="*{weight}"
+                          style="height: 100px"></textarea>
+                <label for="weight">몸무게</label>
+                <span th:errors="*{weight}"></span><br>
+            </div>
+
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
             </div>
 
             <input type="file" name="files" multiple="multiple" onchange="test(this.files)">
@@ -64,7 +81,7 @@
                 event.preventDefault();
                 deleteFile(files[i]);
             });
-            deleteButton.innerText="X";
+            deleteButton.innerText = "X";
             item.appendChild(fileName);
             item.appendChild(deleteButton);
             fileList.appendChild(item);
@@ -74,7 +91,7 @@
     function deleteFile(deleteFile) {
         const inputFile = document.querySelector('input[name="files"]');
         const dataTransfer = new DataTransfer();
-        selectedFiles = selectedFiles.filter(file => file!==deleteFile);
+        selectedFiles = selectedFiles.filter(file => file !== deleteFile);
         selectedFiles.forEach(file => {
             dataTransfer.items.add(file);
         })

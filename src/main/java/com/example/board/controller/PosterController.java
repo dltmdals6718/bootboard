@@ -20,7 +20,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -53,22 +56,51 @@ public class PosterController {
     }
 
     @GetMapping("/posters/{category}/write")
-    public String writeForm(@PathVariable Category category, Model model) {// @ModelAttribute라 Model에 model.addAttribute("poster", poster)가 자동 등록됨.
+    public String writeForm(@PathVariable Category category, Model model) {
         model.addAttribute("category", category);
         model.addAttribute("poster", new Poster());
-        // createPosterForm에서 Poster 객체를 사용하기에 빈 객체를 넘겨주자.
-        // 이렇게 작서함으로써 Poster 데이터를 재사용할 수 있다. (검증시 재사용)
-
         return "posters/createPosterForm";
     }
 
     @PostMapping("/posters/{category}")
-    public String write(@PathVariable("category") Category category, @RequestParam(required = false) List<MultipartFile> files, @ModelAttribute @Valid Poster poster , Errors errors) throws IOException {
+    public String write(@PathVariable("category") Category category, @RequestParam(required = false) List<MultipartFile> files, @ModelAttribute Poster poster , BindingResult bindingResult) throws IOException {
 
-        if(errors.hasErrors()) {
+        if(poster.getHeight()!=null && poster.getWeight()!=null) {
+            Long height = poster.getHeight();
+            Long weight = poster.getWeight();
+
+            if(height+weight<150) {
+                //bindingResult.addError(new ObjectError("poster", "키와 몸무게의 합은 150이상이여야 합니다."));
+                bindingResult.addError(new ObjectError("poster", null, null, "키와 몸무게의 합은 150이상이여야 합니다."));
+            }
+        }
+
+        // input의 type=text는 아무것도 입력하지 않아도 null이 되진 않음을 주의.
+        if(poster.getTitle().equals("")) {
+            bindingResult.addError(new FieldError("poster", "title", "제목을 입력하세요."));
+        }
+
+        if(poster.getWriter().equals("")) {
+            bindingResult.addError(new FieldError("poster", "writer", "작성자를 입력하세요."));
+        }
+
+        if(poster.getContent().equals("")) {
+            bindingResult.addError(new FieldError("poster", "content", "내용을 입력하세요."));
+        }
+
+        if(poster.getHeight()==null||poster.getHeight()<100) {
+            //bindingResult.addError(new FieldError("poster", "height", "키는 100이상이어야 합니다."));
+            // 100이상이 아니면 입력 값이 초기화된다. 이것을 아래의 메서드로 해결.
+            bindingResult.addError(new FieldError("poster", "height", poster.getHeight(), false, null, null, "키는 100이상이어야 합니다."));
+        }
+
+        if(poster.getWeight()==null||poster.getWeight()<40) {
+            bindingResult.addError(new FieldError("poster", "weight", "몸무게는 40이상이어야 합니다."));
+            //bindingResult.addError(new FieldError("poster", "weight", poster.getWeight(), false, null, null, "몸무게는 40이상이어야 합니다."));
+        }
+
+        if(bindingResult.hasErrors()) {
             return "posters/createPosterForm";
-            // createPosterForm으로 넘어갈때 @ModelAttribute Poster가 model.addAttribute하기에
-            // 기존의 입력 Poster 값이 유지가된다.
         }
 
         poster.setCategory(category);
@@ -161,7 +193,7 @@ public class PosterController {
                        @RequestParam(required = false) List<Long> deleteFilesId,
                        @Valid Poster poster, Errors errors) throws IOException {
 
-        if(errors.hasErrors()) {
+        if(errors.hasErrors()) { // 수정 필요
             return "posters/editPosterForm";
         }
         Category category = posterService.findByOne(id).get().getCategory();

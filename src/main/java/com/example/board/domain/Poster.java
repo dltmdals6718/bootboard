@@ -22,18 +22,14 @@ public class Poster {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "제목을 입력하세요.")
     private String title;
-
-    @NotBlank(message = "작성자를 입력하세요.")
     private String writer;
-
-
-    @NotBlank(message = "내용을 입력하세요.")
     private String content;
-
     private LocalDateTime regdate;
+
+    // BindingResult 적용해보기위해 키, 몸무게 필드 추가
+    private Long height;
+    private Long weight;
 
     @JsonBackReference
     @OneToMany(mappedBy = "poster", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
