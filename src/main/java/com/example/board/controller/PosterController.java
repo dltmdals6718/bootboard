@@ -20,10 +20,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -70,36 +68,27 @@ public class PosterController {
             Long weight = poster.getWeight();
 
             if(height+weight<150) {
-                //bindingResult.addError(new ObjectError("poster", "키와 몸무게의 합은 150이상이여야 합니다."));
-                bindingResult.addError(new ObjectError("poster", null, null, "키와 몸무게의 합은 150이상이여야 합니다."));
+                bindingResult.reject("heightWeightSumMin", new Object[]{150, height+weight}, null);
             }
         }
 
-        // input의 type=text는 아무것도 입력하지 않아도 null이 되진 않음을 주의.
-        if(poster.getTitle().equals("")) {
-            bindingResult.addError(new FieldError("poster", "title", "제목을 입력하세요."));
-        }
+        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "title", "require");
+        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "writer","require");
 
-        if(poster.getWriter().equals("")) {
-            bindingResult.addError(new FieldError("poster", "writer", "작성자를 입력하세요."));
-        }
+        if(!StringUtils.hasText(poster.getContent()))
+            bindingResult.rejectValue("content", "require");
 
-        if(poster.getContent().equals("")) {
-            bindingResult.addError(new FieldError("poster", "content", "내용을 입력하세요."));
-        }
-
-        if(poster.getHeight()==null||poster.getHeight()<100) {
-            //bindingResult.addError(new FieldError("poster", "height", "키는 100이상이어야 합니다."));
-            // 100이상이 아니면 입력 값이 초기화된다. 이것을 아래의 메서드로 해결.
-            bindingResult.addError(new FieldError("poster", "height", poster.getHeight(), false, null, null, "키는 100이상이어야 합니다."));
-        }
+        if(poster.getHeight()==null||poster.getHeight()<100)
+            bindingResult.rejectValue("height", "min", new Object[]{100}, null);
 
         if(poster.getWeight()==null||poster.getWeight()<40) {
-            bindingResult.addError(new FieldError("poster", "weight", "몸무게는 40이상이어야 합니다."));
-            //bindingResult.addError(new FieldError("poster", "weight", poster.getWeight(), false, null, null, "몸무게는 40이상이어야 합니다."));
+            // 변경전 - FieldError, ObjectError 생성해서 bindingFailure, codes, arguments 등... 넣어주기 번거로움.
+             bindingResult.addError(new FieldError("poster", "weight", poster.getWeight(), false, null, null, "몸무게는 40이상이어야 합니다."));
+            bindingResult.rejectValue("weight", "min", new Object[]{40}, null);
         }
 
         if(bindingResult.hasErrors()) {
+            System.out.println("bindingResult = " + bindingResult);
             return "posters/createPosterForm";
         }
 
