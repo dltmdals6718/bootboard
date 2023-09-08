@@ -7,7 +7,9 @@ import com.example.board.file.FileStore;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import com.example.board.service.UploadFileService;
+import com.example.board.validation.PosterValidation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -35,22 +39,20 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class PosterController {
 
     private final PosterService posterService;
-
     private final CommentService commentService;
+    private final FileStore fileStore;
+    private final UploadFileService uploadFileService;
+    private final PosterValidation posterValidation;
 
-    private FileStore fileStore;
 
-    private UploadFileService uploadFileService;
-
-    @Autowired
-    public PosterController(PosterService posterService, CommentService commentService, FileStore fileStore, UploadFileService uploadFileService) {
-        this.posterService = posterService;
-        this.commentService = commentService;
-        this.fileStore = fileStore;
-        this.uploadFileService = uploadFileService;
+    @InitBinder("poster")
+    public void init(WebDataBinder webDataBinder) {
+        log.info("init binder = {}", webDataBinder);
+        webDataBinder.addValidators(posterValidation);
     }
 
     @GetMapping("/posters/{category}/write")
@@ -61,32 +63,11 @@ public class PosterController {
     }
 
     @PostMapping("/posters/{category}")
-    public String write(@PathVariable("category") Category category, @RequestParam(required = false) List<MultipartFile> files, @ModelAttribute Poster poster , BindingResult bindingResult) throws IOException {
+    public String write(@PathVariable("category") Category category,
+                        @RequestParam(required = false) List<MultipartFile> files,
+                        @Validated @ModelAttribute Poster poster, BindingResult bindingResult) throws IOException {
 
-        if(poster.getHeight()!=null && poster.getWeight()!=null) {
-            Long height = poster.getHeight();
-            Long weight = poster.getWeight();
-
-            if(height+weight<150) {
-                bindingResult.reject("heightWeightSumMin", new Object[]{150, height+weight}, null);
-            }
-        }
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "title", "require");
-        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "writer","require");
-
-        if(!StringUtils.hasText(poster.getContent()))
-            bindingResult.rejectValue("content", "require");
-
-        if(poster.getHeight()==null||poster.getHeight()<100)
-            bindingResult.rejectValue("height", "min", new Object[]{100}, null);
-
-        if(poster.getWeight()==null||poster.getWeight()<40) {
-            // 변경전 - FieldError, ObjectError 생성해서 bindingFailure, codes, arguments 등... 넣어주기 번거로움.
-             bindingResult.addError(new FieldError("poster", "weight", poster.getWeight(), false, null, null, "몸무게는 40이상이어야 합니다."));
-            bindingResult.rejectValue("weight", "min", new Object[]{40}, null);
-        }
-
+        //posterValidation.validate(poster, bindingResult);
         if(bindingResult.hasErrors()) {
             System.out.println("bindingResult = " + bindingResult);
             return "posters/createPosterForm";
@@ -106,7 +87,7 @@ public class PosterController {
     }
 
     @GetMapping("/posters/{category}")
-    public String list(@PathVariable("category") Category category, Model model, @RequestParam(defaultValue = "0") int page,@RequestParam(required = false, defaultValue = "regdate") String order, @RequestParam(required = false) String searchTitle) {
+    public String list(@PathVariable("category") Category category, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "regdate") String order, @RequestParam(required = false) String searchTitle) {
 
         Sort sort=Sort.by(Sort.Order.desc("regdate"), Sort.Order.desc("id"));
         if(order!=null&&order.equals("comment"))
@@ -172,6 +153,7 @@ public class PosterController {
     @GetMapping("/poster/edit")
     public String editForm(Model model, @RequestParam(value="id") Long id) {
         Poster poster = posterService.findByOne(id).get();
+        model.addAttribute("category", poster.getCategory());
         model.addAttribute("poster", poster);
         return "posters/editPosterForm";
     }
@@ -180,12 +162,14 @@ public class PosterController {
     public String edit(@RequestParam(value="id") Long id,
                        @RequestParam(required = false) List<MultipartFile> files,
                        @RequestParam(required = false) List<Long> deleteFilesId,
-                       @Valid Poster poster, Errors errors) throws IOException {
+                       @Validated Poster poster, Errors errors, Model model) throws IOException {
+        Category category = posterService.findByOne(id).get().getCategory();
 
-        if(errors.hasErrors()) { // 수정 필요
+        if(errors.hasErrors()) { // 수정 필요 editPosterForm 넘어갈땐 poster의 category
+            model.addAttribute("category", category);
             return "posters/editPosterForm";
         }
-        Category category = posterService.findByOne(id).get().getCategory();
+
         posterService.editPoster(id, poster, files, deleteFilesId);
         return "redirect:/posters/" + category;
     }

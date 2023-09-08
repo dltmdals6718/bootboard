@@ -35,11 +35,30 @@
             <label>내용</label>
             <span th:errors="*{content}"></span><br>
         </div>
+
+        <div class="form-floating">
+                <textarea class="form-control" placeholder="키" type="text" id="height" name="height" th:field="*{height}"
+                          style="height: 100px"></textarea>
+            <label for="height">키</label>
+            <span th:errors="*{height}"></span><br>
+        </div>
+
+        <div class="form-floating">
+                <textarea class="form-control" placeholder="몸무게" type="text" id="weight" name="weight" th:field="*{weight}"
+                          style="height: 100px"></textarea>
+            <label for="weight">몸무게</label>
+            <span th:errors="*{weight}"></span><br>
+        </div>
+
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+        </div>
+
         <input type="file" name="files" multiple="multiple" onchange="updateFiles(this.files)">
         <div id="file-list">
         </div>
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{|/posters/${poster.category}|}'|">취소</button>
+            <button type="button" class="btn btn-primary mx-1" th:onclick="|location.href='@{|/posters/${category}|}'|">취소</button>
             <button class="btn btn-primary" type="submit">제출</button>
         </div>
     </form>
