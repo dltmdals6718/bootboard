@@ -25,6 +25,14 @@
             <th>내용</th>
             <td th:text="${poster.content}"></td>
         </tr>
+        <tr>
+            <th>키</th>
+            <td th:text="${poster.height}"></td>
+        </tr>
+        <tr>
+            <th>몸무게</th>
+            <td th:text="${poster.weight}"></td>
+        </tr>
         <tr th:if="${poster.getImgFiles().size} != 0">
             <th>첨부파일</th>
             <td>
