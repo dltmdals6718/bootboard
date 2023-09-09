@@ -62,6 +62,7 @@ public class PosterController {
         return "posters/createPosterForm";
     }
 
+    // /posterts/{category}/write에서 유효성 실패시 /posters/{category}로 바뀌니깐 수정 필요
     @PostMapping("/posters/{category}")
     public String write(@PathVariable("category") Category category,
                         @RequestParam(required = false) List<MultipartFile> files,
