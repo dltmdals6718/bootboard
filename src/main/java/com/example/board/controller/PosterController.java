@@ -51,8 +51,8 @@ public class PosterController {
 
     @InitBinder("poster")
     public void init(WebDataBinder webDataBinder) {
-        log.info("init binder = {}", webDataBinder);
-        webDataBinder.addValidators(posterValidation);
+        //거log.info("init binder = {}", webDataBinder);
+        //webDataBinder.addValidators(posterValidation);
     }
 
     @GetMapping("/posters/{category}/write")
