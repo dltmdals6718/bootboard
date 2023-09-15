@@ -10,7 +10,7 @@
 <div class="d-flex justify-content-center">
     <!-- enctype="multipart/form-data" 안하면 submit해도 null이 들어감. -->
 
-    <form class="w-50 h-50" th:action="@{/poster/edit(id=${poster.id})}" method="post" th:object="${poster}" enctype="multipart/form-data">
+    <form class="w-50 h-50" th:action="@{/poster/edit(id=${param.id})}" method="post" th:object="${poster}" enctype="multipart/form-data">
 
         <div>
             <input type="checkbox" th:field="*{fix}">
@@ -69,7 +69,7 @@
 
     $.ajax({
         type: "GET",
-        url: `/files/[[${poster.id}]]`,
+        url: `/files/[[${param.id}]]`,
         success: function (files) {
             loadFiles(files);
         }
