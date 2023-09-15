@@ -26,23 +26,16 @@ public class Poster {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String title;
 
-    @NotBlank
     private String writer;
 
-    @NotBlank
     private String content;
     private LocalDateTime regdate;
 
     // BindingResult 적용해보기위해 키, 몸무게 필드 추가
-    @NotNull
-    @Range(min = 100, max = 250)
     private Long height;
 
-    @NotNull
-    @Range(min=50, max = 200)
     private Long weight;
 
     @JsonBackReference

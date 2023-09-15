@@ -3,6 +3,8 @@ package com.example.board.controller;
 import com.example.board.domain.Category;
 import com.example.board.domain.Poster;
 import com.example.board.domain.UploadFile;
+import com.example.board.domain.form.PosterSaveForm;
+import com.example.board.domain.form.PosterUpdateForm;
 import com.example.board.file.FileStore;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
@@ -62,19 +64,25 @@ public class PosterController {
         return "posters/createPosterForm";
     }
 
-    // /posterts/{category}/write에서 유효성 실패시 /posters/{category}로 바뀌니깐 수정 필요
     @PostMapping("/posters/{category}")
     public String write(@PathVariable("category") Category category,
                         @RequestParam(required = false) List<MultipartFile> files,
-                        @Validated @ModelAttribute Poster poster, BindingResult bindingResult) throws IOException {
+                        @Validated @ModelAttribute(name = "poster") PosterSaveForm form, BindingResult bindingResult) throws IOException {
 
-        //posterValidation.validate(poster, bindingResult);
         if(bindingResult.hasErrors()) {
             System.out.println("bindingResult = " + bindingResult);
             return "posters/createPosterForm";
         }
 
+        Poster poster = new Poster();
         poster.setCategory(category);
+        poster.setTitle(form.getTitle());
+        poster.setWriter(form.getWriter());
+        poster.setContent(form.getContent());
+        poster.setHeight(form.getHeight());
+        poster.setWeight(form.getWeight());
+        poster.setFix(form.getFix());
+
         if(files!=null) {
             List<UploadFile> uploadFiles = fileStore.storeFiles(files);
             //uploadFileService.saveAll(uploadFiles); cascade 작성으로인해 불필요한 코드
@@ -163,16 +171,25 @@ public class PosterController {
     public String edit(@RequestParam(value="id") Long id,
                        @RequestParam(required = false) List<MultipartFile> files,
                        @RequestParam(required = false) List<Long> deleteFilesId,
-                       @Validated Poster poster, Errors errors, Model model) throws IOException {
+                       @Validated @ModelAttribute("poster") PosterUpdateForm form, Errors errors, Model model) throws IOException {
         Category category = posterService.findByOne(id).get().getCategory();
 
         if(errors.hasErrors()) { // 수정 필요 editPosterForm 넘어갈땐 poster의 category
+            System.out.println("errors = " + errors);
             model.addAttribute("category", category);
             return "posters/editPosterForm";
         }
 
+        Poster poster = new Poster();
+        poster.setTitle(form.getTitle());
+        poster.setWriter(form.getWriter());
+        poster.setContent(form.getContent());
+        poster.setHeight(form.getHeight());
+        poster.setWeight(form.getWeight());
+        poster.setFix(form.getFix());
+
         posterService.editPoster(id, poster, files, deleteFilesId);
-        return "redirect:/posters/" + category;
+        return "redirect:/posters/view/" + id;
     }
 
 
