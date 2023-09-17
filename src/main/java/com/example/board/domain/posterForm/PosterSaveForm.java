@@ -1,6 +1,5 @@
-package com.example.board.domain.form;
+package com.example.board.domain.posterForm;
 
-import com.example.board.domain.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
