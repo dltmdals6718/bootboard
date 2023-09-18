@@ -30,6 +30,8 @@ dependencies {
     // lombok
     implementation 'org.projectlombok:lombok'
 
+    implementation group: 'org.json', name: 'json', version: '20230618'
+
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
