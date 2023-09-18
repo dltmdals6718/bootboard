@@ -2,7 +2,10 @@ package com.example.board.controller;
 
 import com.example.board.domain.Member;
 import com.example.board.domain.MemberType;
+import com.example.board.domain.SessionConst;
 import com.example.board.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +35,7 @@ public class KakaoController {
     private String secret_id; // 보안 추가
 
     @GetMapping("/kakaoOauth")
-    public String getToken(@RequestParam("code") String code) {
+    public String getToken(@RequestParam("code") String code, HttpServletRequest request) {
 
         // Token 발급
         RestTemplate restTemplate = new RestTemplate();
@@ -54,6 +57,9 @@ public class KakaoController {
         Member memberInfo = getInfo(token);
         Member saveMember = memberService.save(memberInfo);
 
+        // 세션에 회원 정보 저장
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, saveMember);
 
         return "redirect:/";
     }
