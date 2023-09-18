@@ -44,12 +44,12 @@ create table upload_file (
 
 alter table poster add fix boolean; -- BOOLEAN = tinyint(1) --
 
-/* create table notice(
-    id bigint,
-    title varchar(255),
-    writer varchar(255),
-    content varchar(255),
-    regdate DATETIME,
-    category VARCHAR(255),
+
+CREATE TABLE MEMBER (
+    id bigint AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    sns_identifier VARCHAR(255),
+    member_type VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
-); */
+);
