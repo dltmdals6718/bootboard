@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block th:fragment="headerFragment">
+    <header>
+        <a href="/posters/FREE">자유 게시판</a>
+        <a href="/posters/QUESTION">질문 게시판</a>
+
+        <th:block th:if="${isLogin}">
+            <button id="logout" class="btn btn-primary">로그아웃</button>
+        </th:block>
+
+        <th:block th:unless="${isLogin}">
+            <button id="login" class="btn btn-primary">로그인</button>
+        </th:block>
+    </header>
+</th:block>
+<script src="/js/bootstrap.min.js"></script>
+</body>
+</html>
