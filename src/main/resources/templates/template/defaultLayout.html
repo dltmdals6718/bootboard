@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" th:fragment="layout (title, content)" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="${title}">Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<th:block th:replace="~{template/fragment/header :: headerFragment}">
+    <p>헤더(navigation var)</p>
+</th:block>
+
+<th:block th:replace="${content}">
+    <p>레이아웃 컨텐츠</p>
+</th:block>
+
+
+<script src="/js/kakaoButton.js"></script> <!-- login, logout 버튼 처리 -->
+<script src="/js/bootstrap.min.js"></script>
+</body>
+</html>
