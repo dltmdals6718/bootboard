@@ -21,7 +21,7 @@ public class UploadFile {
 
     @ManyToOne
     @JoinColumn(name="pno")
-    @JsonManagedReference
+    @JsonBackReference
     private Poster poster;
 
     private String uploadFileName; // 업로드한 파일명

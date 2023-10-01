@@ -2,6 +2,7 @@ package com.example.board.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class Poster {
 
     private Long weight;
 
-    @JsonBackReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "poster", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<UploadFile> imgFiles = new ArrayList<>();
 
