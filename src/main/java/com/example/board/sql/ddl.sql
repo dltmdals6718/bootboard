@@ -53,3 +53,32 @@ CREATE TABLE MEMBER (
     member_type VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
+
+Poster
+| id          | bigint       | NO   | PRI | NULL    | auto_increment |
+| title       | varchar(100) | NO   |     | NULL    |                |
+| writer      | varchar(100) | NO   |     | NULL    |                |
+| content     | varchar(300) | NO   |     | NULL    |                |
+| regdate     | datetime     | YES  |     | NULL    |                |
+| comment_cnt | int          | YES  |     | NULL    |                |
+| category    | varchar(255) | YES  |     | NULL    |                |
+| fix         | tinyint(1)   | YES  |     | NULL    |                |
+| height      | bigint       | YES  |     | NULL    |                |
+| weight      | bigint       | YES  |     | NULL
+
+Comment
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| id                | bigint       | NO   | PRI | NULL    | auto_increment |
+| pno               | bigint       | NO   | MUL | NULL    |                |
+| writer            | varchar(100) | NO   |     | NULL    |                |
+| content           | varchar(300) | NO   |     | NULL    |                |
+| regdate           | datetime     | NO   |     | NULL    |                |
+| parent_comment_id | int          | YES  |     | NULL    |                |
+| is_parent         | int          | NO   |     | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+
+ALTER TABLE poster DROP writer;
+ALTER TABLE poster ADD writer bigint;
+ALTER TABLE poster ADD FOREIGN KEY (writer) REFERENCES member(id);
