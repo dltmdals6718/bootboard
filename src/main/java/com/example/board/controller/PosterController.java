@@ -1,8 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.domain.Category;
-import com.example.board.domain.Poster;
-import com.example.board.domain.UploadFile;
+import com.example.board.domain.*;
 import com.example.board.domain.posterForm.PosterSaveForm;
 import com.example.board.domain.posterForm.PosterUpdateForm;
 import com.example.board.file.FileStore;
@@ -63,6 +61,7 @@ public class PosterController {
     @PostMapping("/posters/{category}")
     public String write(@PathVariable("category") Category category,
                         @RequestParam(required = false) List<MultipartFile> files,
+                        @SessionAttribute(name=SessionConst.LOGIN_MEMBER) Member loginMember,
                         @Validated @ModelAttribute(name = "poster") PosterSaveForm form, BindingResult bindingResult) throws IOException {
 
         if(bindingResult.hasErrors()) {
@@ -73,7 +72,7 @@ public class PosterController {
         Poster poster = new Poster();
         poster.setCategory(category);
         poster.setTitle(form.getTitle());
-        poster.setWriter(form.getWriter());
+        poster.setWriter(loginMember);
         poster.setContent(form.getContent());
         poster.setHeight(form.getHeight());
         poster.setWeight(form.getWeight());
@@ -167,6 +166,7 @@ public class PosterController {
     public String edit(@RequestParam(value="id") Long id,
                        @RequestParam(required = false) List<MultipartFile> files,
                        @RequestParam(required = false) List<Long> deleteFilesId,
+                       @SessionAttribute(name= SessionConst.LOGIN_MEMBER) Member loginMember,
                        @Validated @ModelAttribute("poster") PosterUpdateForm form, Errors errors, Model model) throws IOException {
         Category category = posterService.findByOne(id).get().getCategory();
 
@@ -178,7 +178,7 @@ public class PosterController {
 
         Poster poster = new Poster();
         poster.setTitle(form.getTitle());
-        poster.setWriter(form.getWriter());
+        poster.setWriter(loginMember);
         poster.setContent(form.getContent());
         poster.setHeight(form.getHeight());
         poster.setWeight(form.getWeight());

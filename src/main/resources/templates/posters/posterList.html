@@ -61,7 +61,7 @@
                 <td><a th:text="|${poster.title} [${poster.commentCnt}]|" th:href="@{|/posters/view/${poster.id}|}"
                        style="text-decoration-line: none;"></a>
                 </td>
-                <td th:text="${poster.writer}"></td>
+                <td th:text="${poster.writer.name}"></td>
                 <td th:text="${#temporals.format(poster.regdate, 'yyyy.MM.dd HH:mm')}"></td>
             </tr>
         </table>

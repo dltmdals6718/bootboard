@@ -12,9 +12,6 @@ public class PosterSaveForm {
     private String title;
 
     @NotBlank
-    private String writer;
-
-    @NotBlank
     private String content;
 
     @NotNull
