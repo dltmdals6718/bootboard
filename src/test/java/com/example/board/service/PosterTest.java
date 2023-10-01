@@ -65,11 +65,4 @@ public class PosterTest {
         }
     }
 
-    @Test
-    public void nullIterTest() {
-        List<Long> list = null;
-        for (Long aLong : list) {
-            System.out.println("aLong = " + aLong);
-        }
-    }
 }

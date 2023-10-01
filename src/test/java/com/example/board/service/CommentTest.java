@@ -1,6 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.domain.Comment;
+import com.example.board.domain.Poster;
 import com.example.board.repository.SpringDataJpaCommentRepository;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
@@ -25,8 +26,11 @@ public class CommentTest {
     @Test
     @DisplayName("댓글 전송")
     public void commentPost() {
+        Poster poster = new Poster();
+        poster.setId(376L);
+
         Comment comment = new Comment();
-        comment.setPno(200L);
+        comment.setPoster(poster);
         comment.setWriter("홍길동");
         comment.setContent("댓글 내용");
         comment.setRegDate(LocalDateTime.now());
@@ -37,10 +41,13 @@ public class CommentTest {
     @Test
     @DisplayName("해당 게시글 댓글 삭제")
     public void commentDeleteByPno() {
-        List<Comment> commentList = commentService.findComments(232L);
+        Poster poster = new Poster();
+        poster.setId(1L);
+
+        List<Comment> commentList = commentService.findComments(poster);
         System.out.println("commentList Size = " + commentList.size());
-        commentService.deleteCommentByPno(232L);
-        Assertions.assertThat(commentService.findComments(232L).size()).isEqualTo(0);
+        commentService.deleteCommentByPoster(poster);
+        Assertions.assertThat(commentService.findComments(poster).size()).isEqualTo(0);
     }
 
 
