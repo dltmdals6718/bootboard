@@ -24,12 +24,6 @@
         </div>
 
         <div class="form-floating">
-            <input class="form-control" placeholder="작성자" type="text" name="writer" th:field="*{writer}">
-            <label>작성자</label>
-            <span th:errors="*{writer}"></span><br>
-        </div>
-
-        <div class="form-floating">
         <textarea class="form-control" placeholder="내용" type="text" name="content" th:field="*{content}"
                   style="height: 100px"></textarea>
             <label>내용</label>

@@ -11,9 +11,6 @@ public class PosterUpdateForm {
     private String title;
 
     @NotBlank
-    private String writer;
-
-    @NotBlank
     private String content;
 
     private Long height;

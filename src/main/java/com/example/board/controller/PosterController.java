@@ -178,7 +178,7 @@ public class PosterController {
 
         Poster poster = new Poster();
         poster.setTitle(form.getTitle());
-        poster.setWriter(loginMember);
+        poster.setWriter(loginMember); // 세션 정보로 작성자 변경
         poster.setContent(form.getContent());
         poster.setHeight(form.getHeight());
         poster.setWeight(form.getWeight());
