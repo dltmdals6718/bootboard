@@ -86,13 +86,12 @@
         let data = {
             writer: writer,
             content: content,
-            pno: pno,
             parent: 1
         };
 
         $.ajax({
             type: "post",
-            url: '/comment/write',
+            url: '/comment/write?pno='+pno,
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(data),

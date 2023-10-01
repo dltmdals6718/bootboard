@@ -2,6 +2,7 @@ package com.example.board.service;
 
 
 import com.example.board.domain.Comment;
+import com.example.board.domain.Poster;
 import com.example.board.repository.SpringDataJpaCommentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class CommentService {
     public Long write(Comment comment) {
         comment.setRegDate(LocalDateTime.now());
         if(comment.isParent()) {
-            posterService.incrementCommentCnt(comment.getPno());
+            posterService.incrementCommentCnt(comment.getPoster().getId());
         }
 
         commentRepository.save(comment); // DB에 저장할때까지 id를 알 수 없으므로
@@ -44,19 +45,20 @@ public class CommentService {
         return comment.getId();
     }
 
-    public void deleteCommentByPno(Long pno) {
-        List<Comment> commentList = commentRepository.findByPno(pno);
+    public void deleteCommentByPoster(Poster poster) {
+        List<Comment> commentList = commentRepository.findByPoster(poster);
         for (Comment comment : commentList) {
             commentRepository.delete(comment);
         }
     }
     public Page<Comment> findPagingComments(Long pno, boolean isParent ,Pageable pageable) {
-        Page<Comment> comments = commentRepository.findByPnoAndParent(pno, isParent ,pageable);
+        Poster poster = posterService.findByOne(pno).get();
+        Page<Comment> comments = commentRepository.findByPosterAndParent(poster, isParent ,pageable);
         return comments;
     }
 
-    public List<Comment> findComments(Long pno) {
-        return commentRepository.findByPno(pno);
+    public List<Comment> findComments(Poster poster) {
+        return commentRepository.findByPoster(poster);
     }
 
     public Comment findComment(Long commentId) {

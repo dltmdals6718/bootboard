@@ -12,11 +12,10 @@ public class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name="pno")
-    private Long pno; // 외래 키 매핑해보자.
+    @ManyToOne
+    @JoinColumn(name="poster_id")
+    private Poster poster;
     private String writer;
-
     private String content;
 
     @Column(name="regdate")

@@ -148,8 +148,9 @@ public class PosterController {
 
     @GetMapping("/poster/delete")
     public String delete(@RequestParam(value="id") Long id) {
-        Category category = posterService.findByOne(id).get().getCategory();
-        commentService.deleteCommentByPno(id);
+        Poster poster = posterService.findByOne(id).get();
+        Category category = poster.getCategory();
+        commentService.deleteCommentByPoster(poster);
         posterService.deletePoster(id);
         return "redirect:/posters/" + category;
     }
@@ -211,5 +212,4 @@ public class PosterController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(urlResource);
     }
-
 }

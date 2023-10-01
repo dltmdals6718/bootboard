@@ -4,6 +4,7 @@ import com.example.board.domain.Comment;
 import com.example.board.domain.Poster;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,32 +17,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
     private final PosterService posterService;
 
 
-    @Autowired
-    public CommentController(CommentService commentService, PosterService posterService) {
-        this.commentService = commentService;
-        this.posterService = posterService;
-    }
-
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Comment commentWrite(@RequestBody Comment comment) {
+    public Comment commentWrite(@RequestBody Comment comment, @RequestParam Long pno) {
+        Poster poster = posterService.findByOne(pno).get();
+        comment.setPoster(poster);
         commentService.write(comment);
         return comment;
     }
 
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String commentWrite2(@ModelAttribute Comment comment) {
-        posterService.incrementCommentCnt(comment.getPno());
+        posterService.incrementCommentCnt(comment.getPoster().getId());
         commentService.write(comment);
-        return "redirect:/poster/read?id="+comment.getPno();
+        return "redirect:/poster/read?id="+comment.getPoster().getId();
     }
     @GetMapping("/comments")
     @ResponseBody
@@ -55,7 +54,7 @@ public class CommentController {
     public Comment commentDelete(Long id) {
         Comment comment = commentService.findComment(id);
         if(comment.isParent()) {
-            posterService.decreaseCommentCnt(comment.getPno());
+            posterService.decreaseCommentCnt(comment.getPoster().getId());
             List<Comment> commentList = commentService.findByParentCommentIdAndIsParent(id, false);
             for(Comment childComment : commentList) {
                 commentService.deleteComment(childComment.getId());
