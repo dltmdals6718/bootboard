@@ -32,13 +32,13 @@ public class CommentService {
 
     public Long write(Comment comment) {
         comment.setRegDate(LocalDateTime.now());
-        if(comment.getIsParent()) {
+        if(comment.isParent()) {
             posterService.incrementCommentCnt(comment.getPno());
         }
 
         commentRepository.save(comment); // DB에 저장할때까지 id를 알 수 없으므로
 
-        if(comment.getIsParent())
+        if(comment.isParent())
             comment.setParentCommentId(comment.getId());
 
         return comment.getId();
@@ -51,7 +51,7 @@ public class CommentService {
         }
     }
     public Page<Comment> findPagingComments(Long pno, boolean isParent ,Pageable pageable) {
-        Page<Comment> comments = commentRepository.findByPnoAndIsParent(pno, isParent ,pageable);
+        Page<Comment> comments = commentRepository.findByPnoAndParent(pno, isParent ,pageable);
         return comments;
     }
 
@@ -70,13 +70,13 @@ public class CommentService {
         Sort sort=Sort.by(Sort.Order.desc("regDate"), Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page, 5, sort);
         Map<String, Object> m = new HashMap<>();
-        m.put("content" ,commentRepository.findByParentCommentIdAndIsParent(parentCommentId, false ,pageable));
-        m.put("totalSize", commentRepository.countByParentCommentIdAndIsParent(parentCommentId, false));
+        m.put("content" ,commentRepository.findByParentCommentIdAndParent(parentCommentId, false ,pageable));
+        m.put("totalSize", commentRepository.countByParentCommentIdAndParent(parentCommentId, false));
         return m;
     }
 
     public List<Comment> findByParentCommentIdAndIsParent(Long parentCommentId, boolean isParent) {
-        return commentRepository.findByParentCommentIdAndIsParent(parentCommentId, isParent);
+        return commentRepository.findByParentCommentIdAndParent(parentCommentId, isParent);
     }
 
 }

@@ -30,25 +30,6 @@ public class CommentController {
         this.posterService = posterService;
     }
 
-    /* 버그 있음 찾아봐
-    @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public Comment commentWrite(@RequestBody Comment comment, @RequestParam(required = false) Long parentCommentId) {
-
-        if(parentCommentId == null) {
-            posterService.incrementCommentCnt(comment.getPno());
-            comment.setParent(true);
-            comment.setParentCommentId(comment.getId());
-            System.out.println("comment = " + comment);
-        } else {
-            comment.setParent(false);
-            Comment parentComment = commentService.findComment(parentCommentId);
-            comment.setParentCommentId(parentComment.getId());
-        }
-
-        commentService.write(comment);
-        return comment;
-    }*/
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Comment commentWrite(@RequestBody Comment comment) {
@@ -73,7 +54,7 @@ public class CommentController {
     @ResponseBody
     public Comment commentDelete(Long id) {
         Comment comment = commentService.findComment(id);
-        if(comment.getIsParent()) {
+        if(comment.isParent()) {
             posterService.decreaseCommentCnt(comment.getPno());
             List<Comment> commentList = commentService.findByParentCommentIdAndIsParent(id, false);
             for(Comment childComment : commentList) {
