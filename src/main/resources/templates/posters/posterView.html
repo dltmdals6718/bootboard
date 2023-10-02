@@ -123,7 +123,7 @@
                     let time = comment.regDate.split('T')[1];
 
                     commentUl.append(`<li> ${comment.writer} ${comment.content} ${date + " " + time}
-                                        <button onclick="removeComment(${comment.pno}, ${comment.id})">삭제</button>
+                                        <button onclick="removeComment(${comment.poster.id}, ${comment.id})">삭제</button>
 
                                         <div>
                                             <button class="reply-btn">답글 작성</button>
@@ -131,7 +131,7 @@
                                             <input name="writer">작성자
                                             <input name="content">내용
                                             <input type="hidden" name="parent_comment_id" value="${comment.id}">
-                                            <input type="hidden" name="pno" value="${comment.pno}">
+                                            <input type="hidden" name="pno" value="${comment.poster.id}">
                                             <button class="reply-submit">제출</button>
                                             </div>
                                             <button class="reply-see" data-parent-comment-id="${comment.id}" data-show="0" style="display: block">답글 보기</button>
@@ -172,12 +172,11 @@
             reply_data = {
                 writer: writerInput,
                 content: contentInput,
-                pno: pno,
                 parentCommentId: parentCommentIdInput
             }
             $.ajax({
                 type: "post",
-                url: "/comment/write",
+                url: "/comment/write?pno="+pno,
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify(reply_data),
@@ -233,7 +232,7 @@
                     let childDelete = document.createElement("button");
                     childDelete.innerHTML = "삭제";
                     childDelete.addEventListener("click", function() {
-                        removeComment(reply.pno, reply.id);
+                        removeComment(reply.poster.id, reply.id);
                     })
                     Child.append(childDelete);
                     replyList.appendChild(Child);
