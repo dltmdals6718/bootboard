@@ -2,6 +2,7 @@ package com.example.board;
 
 import com.example.board.filter.LogFilter;
 import com.example.board.interceptor.LogInterceptor;
+import com.example.board.interceptor.LoginCheckInterceptor;
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/css/**", "/*.ico", "/error", "/js/**");
+
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/posters/FREE/write", "/posters/QUESTION/write");
     }
 
     //@Bean
