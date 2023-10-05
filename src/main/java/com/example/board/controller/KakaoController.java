@@ -34,7 +34,7 @@ public class KakaoController {
     @Value("${secret_id}")
     private String secret_id; // 보안 추가
 
-    @GetMapping("/kakaoOauth")
+    @GetMapping("/kakaoLogin")
     public String getToken(@RequestParam("code") String code, HttpServletRequest request) {
 
         // Token 발급
@@ -45,7 +45,7 @@ public class KakaoController {
         MultiValueMap<Object, Object> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
-        body.add("redirect_uri", "http://localhost:8080/kakaoOauth");
+        body.add("redirect_uri", "http://localhost:8080/kakaoLogin");
         body.add("code", code);
         body.add("client_secret", secret_id);
 
