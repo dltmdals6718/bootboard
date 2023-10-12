@@ -15,7 +15,10 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name="poster_id")
     private Poster poster;
-    private String writer;
+
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    private Member writer;
     private String content;
 
     @Column(name="regdate")

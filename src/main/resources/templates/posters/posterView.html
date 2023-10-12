@@ -55,7 +55,6 @@
 
     <div class="border-top border-bottom py-3 my-3">
         <div class="d-flex">
-            <input id="comment_writer" class="justify-content-start h-25 mx-2" placeholder="작성자" type="text"> <br>
             <input id="comment_pno" type="hidden" th:value="${poster.id}">
             <textarea id="comment_content" class="justify-content-end w-100 mx-2" type="text"
                       placeholder="내용"></textarea>
@@ -79,12 +78,10 @@
 <script>
 
     document.getElementById("comment_submit").onclick = function () {
-        let writer = $("#comment_writer").val();
         let content = $("#comment_content").val();
         let pno = $("#comment_pno").val();
 
         let data = {
-            writer: writer,
             content: content,
             parent: 1
         };
@@ -96,7 +93,6 @@
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function () {
-                $("#comment_writer").val('');
                 $("#comment_content").val('');
                 loadComments(pno, 0);
             },
@@ -122,7 +118,7 @@
                     let date = comment.regDate.split('T')[0];
                     let time = comment.regDate.split('T')[1];
 
-                    commentUl.append(`<li> ${comment.writer} ${comment.content} ${date + " " + time}
+                    commentUl.append(`<li> ${comment.writer.name} ${comment.content} ${date + " " + time}
                                         <button onclick="removeComment(${comment.poster.id}, ${comment.id})">삭제</button>
 
                                         <div>

@@ -1,7 +1,9 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Comment;
+import com.example.board.domain.Member;
 import com.example.board.domain.Poster;
+import com.example.board.domain.SessionConst;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,9 @@ public class CommentController {
 
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Comment commentWrite(@RequestBody Comment comment, @RequestParam Long pno) {
+    public Comment commentWrite(@SessionAttribute(name= SessionConst.LOGIN_MEMBER) Member member, @RequestBody Comment comment, @RequestParam Long pno) {
         Poster poster = posterService.findByOne(pno).get();
+        comment.setWriter(member);
         comment.setPoster(poster);
         commentService.write(comment);
         return comment;
