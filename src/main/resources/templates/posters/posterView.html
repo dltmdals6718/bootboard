@@ -55,7 +55,7 @@
 
     <div class="border-top border-bottom py-3 my-3">
         <div class="d-flex">
-            <input id="comment_pno" type="hidden" th:value="${poster.id}">
+            <input id="comment_pno" type="hidden" th:value="${poster.id}"> <!-- url로 posterid 전송하게 수정해보자. -->
             <textarea id="comment_content" class="justify-content-end w-100 mx-2" type="text"
                       placeholder="내용"></textarea>
             <button id="comment_submit" class="btn btn-primary">제출</button>
@@ -76,6 +76,7 @@
 
 <script src="/js/bootstrap.min.js"></script>
 <script>
+    <!-- pno 관련하여 URL에서 가져와보도록 해보자. -->
 
     document.getElementById("comment_submit").onclick = function () {
         let content = $("#comment_content").val();
@@ -97,7 +98,9 @@
                 loadComments(pno, 0);
             },
             error: function (error) {
-                alert("error");
+                if(error.responseJSON && error.responseJSON.message) {
+                    alert(error.responseJSON.message);
+                }
             }
         })
     }
@@ -124,7 +127,6 @@
                                         <div>
                                             <button class="reply-btn">답글 작성</button>
                                             <div class="reply-form" style="display: none;">
-                                            <input name="writer">작성자
                                             <input name="content">내용
                                             <input type="hidden" name="parent_comment_id" value="${comment.id}">
                                             <input type="hidden" name="pno" value="${comment.poster.id}">
@@ -161,12 +163,10 @@
         submitButtons.forEach(submitButton => {
             submitButton.addEventListener("click", function () {
             const replyForm = this.parentElement;
-            const writerInput = replyForm.querySelector('input[name="writer"]').value;
             const contentInput = replyForm.querySelector('input[name="content"]').value;
             const parentCommentIdInput = replyForm.querySelector('input[name="parent_comment_id"]').value;
             const pno = replyForm.querySelector('input[name="pno"]').value;
             reply_data = {
-                writer: writerInput,
                 content: contentInput,
                 parentCommentId: parentCommentIdInput
             }
@@ -180,7 +180,11 @@
                     loadComments(pno, 0);
                 },
                 error: function (error) {
-                    alert("error");
+                    if(error.responseJSON && error.responseJSON.message) {
+                        alert(error.responseJSON.message);
+                    } else {
+                        alert("서버 에러 발생");
+                    }
                 }
             })
         })
@@ -223,7 +227,7 @@
             success: function (replys) {
                 replys.content.forEach( (reply) => {
                     let Child = document.createElement("li");
-                    Child.append(`${reply.writer} ${reply.content} ${reply.regDate}`);
+                    Child.append(`${reply.writer.name} ${reply.content} ${reply.regDate}`);
 
                     let childDelete = document.createElement("button");
                     childDelete.innerHTML = "삭제";

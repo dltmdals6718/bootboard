@@ -6,13 +6,17 @@ import com.example.board.domain.Poster;
 import com.example.board.domain.SessionConst;
 import com.example.board.service.CommentService;
 import com.example.board.service.PosterService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +35,23 @@ public class CommentController {
 
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Comment commentWrite(@SessionAttribute(name= SessionConst.LOGIN_MEMBER) Member member, @RequestBody Comment comment, @RequestParam Long pno) {
+    public ResponseEntity<Map<String, Object>> commentWrite(@SessionAttribute(name= SessionConst.LOGIN_MEMBER, required = false) Member member,
+                                       @RequestBody Comment comment,
+                                       @RequestParam Long pno,
+                                       HttpServletResponse response) {
+        Map<String, Object> m = new HashMap<>();
+        if(member==null) {
+            m.put("message", "로그인이 필요합니다.");
+            return new ResponseEntity(m, HttpStatus.UNAUTHORIZED);
+        }
+
         Poster poster = posterService.findByOne(pno).get();
         comment.setWriter(member);
         comment.setPoster(poster);
         commentService.write(comment);
-        return comment;
+        m.put("status", HttpStatus.CREATED);
+        m.put("message", "댓글 작성 성공");
+        return new ResponseEntity(m, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/comment/write", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
