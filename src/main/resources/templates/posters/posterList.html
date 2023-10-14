@@ -67,11 +67,14 @@
         </table>
 
         <div>
+<!--            <button type="button" class="btn btn-primary float-end"-->
+<!--                    th:onclick="|${session.loginMember} == null ? showMsg() : location.href='/'|">작성하기-->
+<!--            </button>-->
+                        <button type="button" class="btn btn-primary float-end"
+                                th:onclick="showMsg()">작성하기
+                        </button>
 
-            <button type="button" class="btn btn-primary float-end"
-                    th:onclick="|location.href='@{|/posters/${category}/write|}'|">작성하기
-                <!-- th:onclick="'location.href=\'/posters/' + @{${category}} + '/write\''">작성하기2 -->
-            </button>
+
             <nav class="nav justify-content-center">
                 <ul class="pagination">
                     <li class="page-item" th:if="${hasPrevious}"><a class="page-link"
@@ -91,6 +94,16 @@
         </div>
     </div>
     <script src="/js/bootstrap.min.js"></script>
+    <script th:inline="javascript">
+        function showMsg() {
+            if([[${session.loginMember}]]==null) {
+                alert("로그인이 필요합니다.");
+            } else {
+                let category = [[${category}]];
+                window.location.href = `/posters/${category}/write`;
+            }
+        }
+    </script>
 </section>
 </body>
 </html>
